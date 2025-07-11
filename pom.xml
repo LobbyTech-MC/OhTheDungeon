@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>otd</groupId>
 	<artifactId>OhTheDungeonsYoullGo</artifactId>
-	<version>1.21.5</version>
+	<version>1.21.7</version>
 	<properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>21</maven.compiler.source>
@@ -49,18 +49,24 @@
 			<id>maven</id>
 			<url>https://repo1.maven.org/maven2/</url>
 		</repository>
+		<!-- CodeMC -->
+		<repository>
+  			<id>codemc-repo</id>
+  			<url>https://repo.codemc.io/repository/maven-public/</url>
+  			<layout>default</layout>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper-api</artifactId>
-			<version>1.21.5-R0.1-SNAPSHOT</version>
+			<version>1.21.7-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.21.5-R0.1-SNAPSHOT</version>
+			<version>1.21.7-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 			<classifier>remapped-mojang</classifier>
 		</dependency>
@@ -118,6 +124,12 @@
 			<artifactId>nashorn-core</artifactId>
 			<version>15.3</version>
 		</dependency>
+		<dependency>
+  			<groupId>de.tr7zw</groupId>
+  			<artifactId>item-nbt-api</artifactId>
+  			<version>2.15.1</version>
+  			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -139,9 +151,9 @@
                         </goals>
                         <id>remap-obf</id>
                         <configuration>
-                            <srgIn>org.spigotmc:minecraft-server:1.21.5-R0.1-SNAPSHOT:txt:maps-mojang</srgIn>
+                            <srgIn>org.spigotmc:minecraft-server:1.21.7-R0.1-SNAPSHOT:txt:maps-mojang</srgIn>
                             <reverse>true</reverse>
-                            <remappedDependencies>org.spigotmc:spigot:1.21.5-R0.1-SNAPSHOT:jar:remapped-mojang</remappedDependencies>
+                            <remappedDependencies>org.spigotmc:spigot:1.21.7-R0.1-SNAPSHOT:jar:remapped-mojang</remappedDependencies>
                             <remappedArtifactAttached>true</remappedArtifactAttached>
                             <remappedClassifierName>remapped-obf</remappedClassifierName>
                         </configuration>
@@ -154,8 +166,8 @@
                         <id>remap-spigot</id>
                         <configuration>
                             <inputFile>${project.build.directory}/${project.artifactId}-${project.version}-remapped-obf.jar</inputFile>
-                            <srgIn>org.spigotmc:minecraft-server:1.21.5-R0.1-SNAPSHOT:csrg:maps-spigot</srgIn>
-                            <remappedDependencies>org.spigotmc:spigot:1.21.5-R0.1-SNAPSHOT:jar:remapped-obf</remappedDependencies>
+                            <srgIn>org.spigotmc:minecraft-server:1.21.7-R0.1-SNAPSHOT:csrg:maps-spigot</srgIn>
+                            <remappedDependencies>org.spigotmc:spigot:1.21.7-R0.1-SNAPSHOT:jar:remapped-obf</remappedDependencies>
                         </configuration>
                     </execution>
                 </executions>
@@ -163,7 +175,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.5.3</version>
+				<version>3.6.0</version>
 				<configuration>
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 					<relocations>
@@ -178,6 +190,10 @@
 						<relocation>
 							<pattern>org.openjdk.nashorn</pattern>
 							<shadedPattern>otd.lib.org.openjdk.nashorn</shadedPattern>
+						</relocation>
+						<relocation>
+							<pattern>de.tr7zw.changeme.nbtapi</pattern>
+							<shadedPattern>otd.lib.de.tr7zw.changeme.nbtapi</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
