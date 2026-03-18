@@ -28,6 +28,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import otd.lib.async.later.roguelike.Later;
 
@@ -167,23 +173,43 @@ public class ZoneWorld {
 
 	public void commitAll(World w) {
 //		int count = 0;
-		for (Map.Entry<String, BlockBase> entry : map.entrySet()) {
-			String key = entry.getKey();
-			int[] pos = keyToXYZ(key);
-			BlockBase base = entry.getValue();
-			if (base.data != null) {
-				w.getBlockAt(pos[0], pos[1], pos[2]).setBlockData(base.data, false);
-			} else {
-				w.getBlockAt(pos[0], pos[1], pos[2]).setType(base.material, false);
+		try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+        		.world(BukkitAdapter.adapt(w))
+                .allowedRegionsEverywhere() // 允许任何区域
+                .limitUnlimited() // 解除限制
+                .changeSetNull() // 不记录变化
+                .fastMode(true) // 禁用快速模式（true = 无物理/粒子，false = 有物理/粒子）
+                .build()) {
+			for (Map.Entry<String, BlockBase> entry : map.entrySet()) {
+				String key = entry.getKey();
+				int[] pos = keyToXYZ(key);
+				BlockVector3 position = BlockVector3.at(pos[0], pos[1], pos[2]);
+				BlockBase base = entry.getValue();
+				
+				if (base.data != null) {
+					BlockState blockState = BukkitAdapter.adapt(base.data);
+					editSession.setBlock(position, blockState);
+					//w.getBlockAt(pos[0], pos[1], pos[2]).setBlockData(base.data, false);
+				} else {
+					BlockState blockState = BukkitAdapter.adapt(base.material.createBlockData());
+					editSession.setBlock(position, blockState);
+					//w.getBlockAt(pos[0], pos[1], pos[2]).setType(base.material, false);
+				}
+				
+//				if (count < 100)
+//					Bukkit.getLogger().log(Level.INFO, pos[0] + "," + pos[1] + "," + pos[2]);
+//				count++;
+//	            if(base.getType() != Material.AIR) {
+//	                count++;
+//	                if(count < 100) Bukkit.getLogger().log(Level.INFO, key + "," + base.getType().toString());
+//	            }
 			}
-//			if (count < 100)
-//				Bukkit.getLogger().log(Level.INFO, pos[0] + "," + pos[1] + "," + pos[2]);
-//			count++;
-//            if(base.getType() != Material.AIR) {
-//                count++;
-//                if(count < 100) Bukkit.getLogger().log(Level.INFO, key + "," + base.getType().toString());
-//            }
-		}
+			editSession.flushQueue();
+		} catch (Exception e) {
+        	e.printStackTrace();
+            throw new RuntimeException("批量设置方块失败", e);
+        }
+		
 	}
 
 	private static int[] keyToXYZ(String key) {
