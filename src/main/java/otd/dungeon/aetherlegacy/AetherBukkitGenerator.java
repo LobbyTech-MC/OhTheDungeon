@@ -28,6 +28,12 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
 import io.papermc.lib.PaperLib;
 import otd.Main;
 import otd.api.event.DungeonGeneratedEvent;
@@ -105,63 +111,87 @@ public class AetherBukkitGenerator {
 			POOL.put(uuid, chunks0.size());
 		}
 
-		for (int[] chunk : chunks0) {
-			int chunkX = chunk[0];
-			int chunkZ = chunk[1];
+		try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+        		.world(BukkitAdapter.adapt(w.getWorld()))
+                .allowedRegionsEverywhere() // 允许任何区域
+                .limitUnlimited() // 解除限制
+                .changeSetNull() // 不记录变化
+                .fastMode(true) // 禁用快速模式（true = 无物理/粒子，false = 有物理/粒子）
+                .build()) {
+			
+			for (int[] chunk : chunks0) {
+				int chunkX = chunk[0];
+				int chunkZ = chunk[1];
 
-			List<ZoneWorld.CriticalNode> cn = w.getAsyncWorld().getCriticalBlock(chunkX, chunkZ);
-			List<Later> later = w.getAsyncWorld().getCriticalLater(chunkX, chunkZ);
+				List<ZoneWorld.CriticalNode> cn = w.getAsyncWorld().getCriticalBlock(chunkX, chunkZ);
+				List<Later> later = w.getAsyncWorld().getCriticalLater(chunkX, chunkZ);
 
-			delay++;
+				delay++;
 
-			Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
-				PaperLib.getChunkAtAsync(w.getWorld(), chunkX, chunkZ, true).thenAccept((Chunk c) -> {
-					for (ZoneWorld.CriticalNode node : cn) {
-						int[] pos = node.pos;
-						if (node.bd != null) {
-							if (node.bd.getMaterial() != Material.GLASS_PANE)
-								c.getBlock(pos[0], pos[1], pos[2]).setBlockData(node.bd, false);
-						} else {
-							if (node.material != Material.GLASS_PANE)
-								c.getBlock(pos[0], pos[1], pos[2]).setType(node.material, false);
-						}
-					}
-					if (later != null) {
-						for (Later l : later) {
-							l.doSomethingInChunk(c);
-						}
-					}
-
-					boolean isFinish = false;
-					synchronized (POOL) {
-						if (POOL.containsKey(uuid)) {
-							int count = POOL.get(uuid);
-							count--;
-							POOL.put(uuid, count);
-
-							if (count == 0) {
-								isFinish = true;
-								POOL.remove(uuid);
+				Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
+					PaperLib.getChunkAtAsync(w.getWorld(), chunkX, chunkZ, true).thenAccept((Chunk c) -> {
+						for (ZoneWorld.CriticalNode node : cn) {
+							int[] pos = node.pos;
+							BlockVector3 position = BlockVector3.at(pos[0], pos[1], pos[2]);
+							if (node.bd != null) {
+								if (node.bd.getMaterial() != Material.GLASS_PANE) {
+									BlockState blockState = BukkitAdapter.adapt(node.bd);
+									editSession.setBlock(position, blockState);
+									//c.getBlock(pos[0], pos[1], pos[2]).setBlockData(node.bd, false);
+								}
+									
+							} else {
+								if (node.material != Material.GLASS_PANE) {
+									BlockState blockState = BukkitAdapter.adapt(node.material.createBlockData());
+									editSession.setBlock(position, blockState);
+									//c.getBlock(pos[0], pos[1], pos[2]).setType(node.material, false);
+								}
+									
 							}
 						}
-					}
+						if (later != null) {
+							for (Later l : later) {
+								l.doSomethingInChunk(c);
+							}
+						}
 
-					if (isFinish) {
-						Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
+						boolean isFinish = false;
+						synchronized (POOL) {
+							if (POOL.containsKey(uuid)) {
+								int count = POOL.get(uuid);
+								count--;
+								POOL.put(uuid, count);
 
-							int ix = (w.zone_world.getMaxX() + w.zone_world.getMinX()) / 2;
-							int iy = (w.zone_world.getMaxY() + w.zone_world.getMinY()) / 2;
-							int iz = (w.zone_world.getMaxZ() + w.zone_world.getMinZ()) / 2;
+								if (count == 0) {
+									isFinish = true;
+									POOL.remove(uuid);
+								}
+							}
+						}
 
-							DungeonGeneratedEvent event = new DungeonGeneratedEvent(w.getWorld(), chunks0,
-									DungeonType.Aether, ix, iy, iz);
-							Bukkit.getServer().getPluginManager().callEvent(event);
-						}, 1L);
-					}
-				});
+						if (isFinish) {
+							Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
 
-			}, delay);
-		}
+								int ix = (w.zone_world.getMaxX() + w.zone_world.getMinX()) / 2;
+								int iy = (w.zone_world.getMaxY() + w.zone_world.getMinY()) / 2;
+								int iz = (w.zone_world.getMaxZ() + w.zone_world.getMinZ()) / 2;
+
+								DungeonGeneratedEvent event = new DungeonGeneratedEvent(w.getWorld(), chunks0,
+										DungeonType.Aether, ix, iy, iz);
+								Bukkit.getServer().getPluginManager().callEvent(event);
+							}, 1L);
+						}
+					});
+
+				}, delay);
+			}
+			
+			editSession.flushQueue();
+		} catch (Exception e) {
+        	e.printStackTrace();
+            throw new RuntimeException("批量设置方块失败", e);
+        }
+		
 
 		return true;
 	}

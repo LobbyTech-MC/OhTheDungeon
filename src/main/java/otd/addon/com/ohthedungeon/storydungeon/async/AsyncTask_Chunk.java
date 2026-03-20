@@ -17,6 +17,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
 import io.papermc.lib.PaperLib;
 import otd.addon.com.ohthedungeon.storydungeon.util.Node;
 
@@ -56,15 +62,33 @@ public class AsyncTask_Chunk implements AsyncTask {
 			this.remove(r_key);
 		}
 		final List<Node> cc = list;
-		PaperLib.getChunkAtAsync(world, chunkX, chunkZ, true).thenAccept((Chunk c) -> {
-			if (c != null && cc != null) {
-				Chunk cs = c;
-				for (Node n : cc) {
-					int[] pos = n.getPos();
-					cs.getBlock(pos[0], pos[1], pos[2]).setType(n.getMaterial(), false);
+		try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+        		.world(BukkitAdapter.adapt(world))
+                .allowedRegionsEverywhere() // 允许任何区域
+                .limitUnlimited() // 解除限制
+                .changeSetNull() // 不记录变化
+                .fastMode(true) // 禁用快速模式（true = 无物理/粒子，false = 有物理/粒子）
+                .build()) {
+			PaperLib.getChunkAtAsync(world, chunkX, chunkZ, true).thenAccept((Chunk c) -> {
+				if (c != null && cc != null) {
+					Chunk cs = c;
+					for (Node n : cc) {
+						int[] pos = n.getPos();
+						BlockVector3 position = BlockVector3.at(pos[0], pos[1], pos[2]);
+						BlockState blockState = BukkitAdapter.adapt(n.getMaterial().createBlockData());
+						editSession.setBlock(position, blockState);
+						//cs.getBlock(pos[0], pos[1], pos[2]).setType(n.getMaterial(), false);
+					}
 				}
-			}
-		});
+			});
+			
+			editSession.flushQueue();
+            
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new RuntimeException("批量设置头颅失败", e);
+        }
+		
 		return this.isEmpty();
 
 //        Chunk cs = world.getChunkAt(chunkX, chunkZ);
