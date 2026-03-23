@@ -17,16 +17,19 @@ public class SpawnerLightRule {
 		NBTTileEntity nbt = new NBTTileEntity(tileentity.getState());
 
 		if (nbt.hasTag("SpawnData")) {
-			NBTCompound spawnData = nbt.getCompound("SpawnData");
-			NBTCompound customSpawnRules = spawnData.addCompound("custom_spawn_rules");
+		    NBTCompound spawnData = nbt.getCompound("SpawnData");
+		    if (spawnData == null) return; // 安全检查
 
-			NBTCompound skyLightLimit = customSpawnRules.addCompound("sky_light_limit");
-			skyLightLimit.setInteger("min_inclusive", 0);
-			skyLightLimit.setInteger("max_inclusive", 15);
+		    // 修复点：改用 getOrCreateCompound 的逻辑
+		    NBTCompound customSpawnRules = spawnData.getOrCreateCompound("custom_spawn_rules");
 
-			NBTCompound blockLightLimit = customSpawnRules.addCompound("block_light_limit");
-			blockLightLimit.setInteger("min_inclusive", 0);
-			blockLightLimit.setInteger("max_inclusive", 15);
+		    NBTCompound skyLightLimit = customSpawnRules.getOrCreateCompound("sky_light_limit");
+		    skyLightLimit.setInteger("min_inclusive", 0);
+		    skyLightLimit.setInteger("max_inclusive", 15);
+
+		    NBTCompound blockLightLimit = customSpawnRules.getOrCreateCompound("block_light_limit");
+		    blockLightLimit.setInteger("min_inclusive", 0);
+		    blockLightLimit.setInteger("max_inclusive", 15);
 		}
 
 		if (nbt.hasTag("SpawnPotentials")) {

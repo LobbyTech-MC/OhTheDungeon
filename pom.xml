@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>otd</groupId>
 	<artifactId>OhTheDungeonsYoullGo</artifactId>
-	<version>1.21.7</version>
+	<version>1.21.1</version>
 	<properties>
         <libreforge-systemPath>C:\Users\11877\Documents\GitHub\OhTheDungeon\libs\libreforge-5.0.0-all.jar</libreforge-systemPath>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
