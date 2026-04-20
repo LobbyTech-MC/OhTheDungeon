@@ -3,11 +3,25 @@
  */
 package forge_sandbox.com.someguyssoftware.dungeons2.style;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
+import forge_sandbox.GroupHelper;
 import forge_sandbox.com.someguyssoftware.dungeons2.Dungeons2;
 import forge_sandbox.com.someguyssoftware.dungeons2.config.ModConfig;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.Location;
@@ -21,261 +35,272 @@ import forge_sandbox.com.someguyssoftware.dungeonsengine.config.ILevelConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rarity;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
 import forge_sandbox.com.someguyssoftware.gottschcore.random.RandomHelper;
-import forge_sandbox.GroupHelper;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import otd.lib.async.later.dungeons2.Chest_Later;
 import otd.lib.async.AsyncWorldEditor;
+import otd.lib.async.later.dungeons2.Chest_Later;
 
 /**
  * @author Mark Gottschling on Jan 11, 2017
- *
+ * @modified FAWE 2.15.1
  */
 public class BossRoomDecorator extends RoomDecorator {
 
-	private static final int CARPET_PERCENT_CHANCE = 75;
-	private ILootLoader lootLoader;
+    private static final int CARPET_PERCENT_CHANCE = 75;
+    private ILootLoader lootLoader;
+    
+    // 缓存 BlockState
+    private final Map<Material, BlockState> blockStateCache = new ConcurrentHashMap<>();
 
-	/**
-	 * @param chestSheet
-	 */
-	public BossRoomDecorator() {
+    /**
+     * @param chestSheet
+     */
+    public BossRoomDecorator() {
 //        this.chestPopulator = new ChestPopulator(chestSheet);
-	}
+    }
 
-	/**
-	 * 
-	 * @param loader
-	 */
-	public BossRoomDecorator(ILootLoader loader) {
-		setLootLoader(loader);
-	}
+    /**
+     * 
+     * @param loader
+     */
+    public BossRoomDecorator(ILootLoader loader) {
+        setLootLoader(loader);
+    }
 
-	/**
-	 * 
-	 */
-	// TODO this method needs to use the Template pattern. Needs to take in the
-	// Dungeon and return the dungeon
-	// or has to return something that returns all important things added like,
-	// chests, spawners and any other specials. (like StructureGen in Treasure)
-	@Override
-	public void decorate(AsyncWorldEditor world, Random random, Dungeon dungeon, IDungeonsBlockProvider provider,
-			Room room, ILevelConfig config) {
-		Dungeons2.log.debug("In Boos Room Decorator.");
-		List<Entry<DesignElement, ICoords>> surfaceAirZone = room.getFloorMap().entries().stream()
-				.filter(x -> x.getKey().getFamily() == DesignElement.SURFACE_AIR).collect(Collectors.toList());
-		if (surfaceAirZone == null || surfaceAirZone.isEmpty())
-			return;
+    /**
+     * 
+     */
+    @Override
+    public void decorate(AsyncWorldEditor world, Random random, Dungeon dungeon, IDungeonsBlockProvider provider,
+            Room room, ILevelConfig config) {
+        Dungeons2.log.debug("In Boos Room Decorator.");
+        List<Entry<DesignElement, ICoords>> surfaceAirZone = room.getFloorMap().entries().stream()
+                .filter(x -> x.getKey().getFamily() == DesignElement.SURFACE_AIR).collect(Collectors.toList());
+        if (surfaceAirZone == null || surfaceAirZone.isEmpty())
+            return;
 
-		// List<Entry<DesignElement, ICoords>> wallZone;
-		List<Entry<DesignElement, ICoords>> floorZone;
+        // 获取地板区域
+        List<Entry<DesignElement, ICoords>> floorZone = surfaceAirZone.stream()
+                .filter(f -> f.getKey() == DesignElement.FLOOR_AIR)
+                .collect(Collectors.toList());
 
-		// get the floor only (from the air zone)
-		floorZone = surfaceAirZone.stream().filter(f -> f.getKey() == DesignElement.FLOOR_AIR)
-				.collect(Collectors.toList());
+        // 使用 FAWE 批量设置地毯
+        try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                .world(BukkitAdapter.adapt(world.getWorld()))
+                .allowedRegionsEverywhere()
+                .limitUnlimited()
+                .changeSetNull()
+                .fastMode(true)
+                .build()) {
+            
+            Map<BlockVector3, BlockState> carpetBlocksToSet = new HashMap<>();
+            
+            Material carpet = GroupHelper.CARPETS.get(random.nextInt(GroupHelper.CARPETS.size()));
+            BlockState carpetState = getCachedBlockState(carpet.createBlockData());
+            
+            for (Entry<DesignElement, ICoords> entry : floorZone) {
+                if (random.nextInt(100) < CARPET_PERCENT_CHANCE) {
+                    DesignElement elem = entry.getKey();
+                    ICoords coords = entry.getValue();
+                    // 检查支撑
+                    if (hasSupport(world, coords, elem, provider.getLocation(coords, room, room.getLayout()))) {
+                        BlockVector3 position = BlockVector3.at(
+                            coords.getX(), coords.getY(), coords.getZ()
+                        );
+                        carpetBlocksToSet.put(position, carpetState);
+                    }
+                }
+            }
+            
+            // 批量设置地毯
+            for (Map.Entry<BlockVector3, BlockState> entry : carpetBlocksToSet.entrySet()) {
+                editSession.setBlock(entry.getKey(), entry.getValue());
+            }
+            
+            editSession.flushQueue();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		Material carpet = GroupHelper.CARPETS.get(random.nextInt(GroupHelper.CARPETS.size()));
-		for (Entry<DesignElement, ICoords> entry : floorZone) {
-			if (random.nextInt(100) < CARPET_PERCENT_CHANCE) {
-				DesignElement elem = entry.getKey();
-				ICoords coords = entry.getValue();
-				// check if the adjoining block exists
-				if (hasSupport(world, coords, elem, provider.getLocation(coords, room, room.getLayout()))) {
-					// update the world
-					world.setBlockState(coords.toPos(), carpet, 3);
-				}
-			}
-		}
+        // 添加宝箱
+        addChest(world, random, dungeon, provider, room, floorZone, config);
+    }
 
-		// get the walls only (from the air zone)
-		// wallZone = surfaceAirZone.stream().filter(f -> f.getKey() ==
-		// DesignElement.WALL_AIR).collect(Collectors.toList());
+    /**
+     * 添加宝箱
+     */
+    protected ICoords addChest(AsyncWorldEditor world, Random random, Dungeon dungeon, IDungeonsBlockProvider provider,
+            Room room, List<Entry<DesignElement, ICoords>> floorZone, ILevelConfig config) {
+        if (floorZone.isEmpty()) {
+            return null;
+        }
+        
+        // 选择随机位置
+        Entry<DesignElement, ICoords> floorEntry = floorZone.get(random.nextInt(floorZone.size()));
+        DesignElement elem = floorEntry.getKey();
+        ICoords chestCoords = floorEntry.getValue();
+        
+        // 检查支撑
+        Location location = provider.getLocation(chestCoords, room, room.getLayout());
+        if (!hasSupport(world, chestCoords, elem, location)) {
+            Dungeons2.log.debug("Boss Chest has no floor support");
+            return null;
+        }
+        
+        BlockFace facing = orientChest(location);
+        BlockData chestBlockData = GroupHelper.CHEST.get(facing);
+        boolean isChestPlaced = false;
+        
+        // 尝试使用 Treasure2 集成
+        if (ModConfig.enableTreasure2Integration
+                && RandomHelper.checkProbability(random, ModConfig.treasure2ChestProbability)) {
+            Dungeons2.log.debug("boss room adding Treasure2 chest @ " + chestCoords.toShortString());
+            
+            // 计算稀有度
+            Rarity rarity = calculateRarity(dungeon);
+            Dungeons2.log.debug("boss room using rarity -> " + rarity);
+            
+            Chest_Later.generate_later(world, random, chestCoords, rarity, chestBlockData);
+            isChestPlaced = true;
+        }
+        
+        // 默认操作
+        if (!isChestPlaced) {
+            Dungeons2.log.debug("boss room, treasure2 chest was NOT generated, using default.");
+            Chest_Later.generate_later(world, random, chestCoords, Rarity.EPIC, chestBlockData);
+            Dungeons2.log.debug("Adding boss chest @ " + chestCoords.toShortString());
+        }
+        
+        // 从列表中移除
+        floorZone.remove(floorEntry);
+        
+        return chestCoords;
+    }
+    
+    /**
+     * 根据地牢大小计算稀有度
+     */
+    private Rarity calculateRarity(Dungeon dungeon) {
+        int rooms = 0;
+        for (Level level : dungeon.getLevels()) {
+            rooms += level.getRooms().size();
+        }
+        int levels = dungeon.getLevels().size();
+        
+        if (levels > 8 || rooms > 260) {
+            return Rarity.EPIC;
+        } else if (levels > 5 || rooms > 180) {
+            return Rarity.RARE;
+        } else if (levels > 2 || rooms > 100) {
+            return Rarity.SCARCE;
+        }
+        return Rarity.UNCOMMON;
+    }
+    
+    /**
+     * 获取缓存的 BlockState
+     */
+    private BlockState getCachedBlockState(BlockData blockData) {
+        if (blockData == null) {
+            return null;
+        }
+        Material material = blockData.getMaterial();
+        return blockStateCache.computeIfAbsent(material, 
+            m -> BukkitAdapter.adapt(blockData));
+    }
 
-//        // add paintings
-		// TODO Do Second
-//        for (int i = 0; i < 4; i++) {
-//            Entry<DesignElement, ICoords> entry = wallZone.get(random.nextInt(wallZone.size()));
-//            ICoords coords = entry.getValue();
-//            Location location = provider.getLocation(coords, room, room.getLayout());
-//            EnumFacing facing = location.getFacing();
-//            if (location != null) {
-//                EntityHanging entityhanging = new EntityPainting(world, coords.toPos(), facing);
-//                            if (entityhanging != null && entityhanging.onValidSurface()) {
-//                                if (WorldInfo.isServerSide(world)/*!world.isRemote*/) {
-//                                    entityhanging.playPlaceSound();
-//                                    world.spawnEntity(entityhanging);
-//                                }
-//                            }
-//            }
-//            wallZone.remove(entry);
-//        }
+    /**
+     * @deprecated 使用新的 ILevelConfig 版本
+     */
+    @Deprecated
+    @Override
+    public void decorate(AsyncWorldEditor world, Random random, IDungeonsBlockProvider provider, Room room,
+            LevelConfig config) {
+        Dungeons2.log.debug("In Boos Room Decorator.");
+        List<Entry<DesignElement, ICoords>> surfaceAirZone = room.getFloorMap().entries().stream()
+                .filter(x -> x.getKey().getFamily() == DesignElement.SURFACE_AIR).collect(Collectors.toList());
+        if (surfaceAirZone == null || surfaceAirZone.isEmpty())
+            return;
 
-		// TODO add pedestal/alter
+        List<Entry<DesignElement, ICoords>> floorZone = surfaceAirZone.stream()
+                .filter(f -> f.getKey() == DesignElement.FLOOR_AIR)
+                .collect(Collectors.toList());
 
-		/*
-		 * add chest NOTE don't need to handle the chest coords as the chest if filled
-		 * within the method
-		 */
-		addChest(world, random, dungeon, provider, room, floorZone, config);
-	}
+        // 使用 FAWE 批量设置地毯
+        try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                .world(BukkitAdapter.adapt(world.getWorld()))
+                .allowedRegionsEverywhere()
+                .limitUnlimited()
+                .changeSetNull()
+                .fastMode(true)
+                .build()) {
+            
+            Map<BlockVector3, BlockState> carpetBlocksToSet = new HashMap<>();
+            
+            Material carpet = GroupHelper.CARPETS.get(random.nextInt(GroupHelper.CARPETS.size()));
+            BlockState carpetState = getCachedBlockState(carpet.createBlockData());
+            
+            for (Entry<DesignElement, ICoords> entry : floorZone) {
+                if (random.nextInt(100) < CARPET_PERCENT_CHANCE) {
+                    DesignElement elem = entry.getKey();
+                    ICoords coords = entry.getValue();
+                    if (hasSupport(world, coords, elem, provider.getLocation(coords, room, room.getLayout()))) {
+                        BlockVector3 position = BlockVector3.at(
+                            coords.getX(), coords.getY(), coords.getZ()
+                        );
+                        carpetBlocksToSet.put(position, carpetState);
+                    }
+                }
+            }
+            
+            for (Map.Entry<BlockVector3, BlockState> entry : carpetBlocksToSet.entrySet()) {
+                editSession.setBlock(entry.getKey(), entry.getValue());
+            }
+            
+            editSession.flushQueue();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	// TODO add method to interface
-	protected ICoords addChest(AsyncWorldEditor world, Random random, Dungeon dungeon, IDungeonsBlockProvider provider,
-			Room room, List<Entry<DesignElement, ICoords>> floorZone, ILevelConfig config) {
-		// select a random position on the floor
-		Entry<DesignElement, ICoords> floorEntry = floorZone.get(random.nextInt(floorZone.size()));
-		DesignElement elem = floorEntry.getKey();
-		ICoords chestCoords = floorEntry.getValue();
-		// determine location in room
-		Location location = provider.getLocation(chestCoords, room, room.getLayout());
-		if (hasSupport(world, chestCoords, elem, location)) {
-			BlockFace facing = orientChest(location);
-			BlockData chestState = GroupHelper.CHEST.get(facing);
+        // 添加宝箱
+        addChestLegacy(world, random, provider, room, floorZone);
+    }
+    
+    /**
+     * 旧版宝箱添加方法
+     */
+    private void addChestLegacy(AsyncWorldEditor world, Random random, IDungeonsBlockProvider provider,
+                                Room room, List<Entry<DesignElement, ICoords>> floorZone) {
+        if (floorZone.isEmpty()) return;
+        
+        Entry<DesignElement, ICoords> floorEntry = floorZone.get(random.nextInt(floorZone.size()));
+        DesignElement elem = floorEntry.getKey();
+        ICoords chestCoords = floorEntry.getValue();
+        
+        Location location = provider.getLocation(chestCoords, room, room.getLayout());
+        if (hasSupport(world, chestCoords, elem, location)) {
+            BlockFace facing = orientChest(location);
+            Chest_Later.generate_later(world, random, chestCoords, Rarity.EPIC, 
+                                       GroupHelper.CHEST.get(facing));
+            floorZone.remove(floorEntry);
+        } else {
+            Dungeons2.log.debug("Boss Chest has no floor support");
+        }
+    }
 
-			boolean isChestPlaced = false;
-			// place a chest
-			if (ModConfig.enableTreasure2Integration
-					&& RandomHelper.checkProbability(random, ModConfig.treasure2ChestProbability)) {
-				Dungeons2.log.debug("boss room adding Treasure2 chest @ {}",
-						new Object[] { chestCoords.toShortString() });
-				// determine rarity based on dungeon size, # of levels
-				int rooms = 0;
-				for (Level level : dungeon.getLevels()) {
-					rooms += level.getRooms().size();
-				}
-				int levels = dungeon.getLevels().size();
+    /**
+     * @return the lootLoader
+     */
+    @Override
+    public ILootLoader getLootLoader() {
+        return lootLoader;
+    }
 
-				// run thru all level maxing the # of rooms.
-				Rarity rarity = Rarity.UNCOMMON;
-				if (levels > 8 || rooms > 260) {
-					rarity = Rarity.EPIC;
-				} else if (levels > 5 || rooms > 180) {
-					rarity = Rarity.RARE;
-				} else if (levels > 2 || rooms > 100) {
-					rarity = Rarity.SCARCE;
-				}
-
-				Dungeons2.log.debug("boss room using rarity -> {}", new Object[] { rarity });
-
-				Chest_Later.generate_later(world, random, chestCoords, rarity, chestState);
-				isChestPlaced = true;
-			}
-
-			// default action
-			if (!isChestPlaced) {
-				Dungeons2.log.debug("boss room, treasure2 chest was NOT generated, using default.");
-				Chest_Later.generate_later(world, random, chestCoords, Rarity.EPIC, chestState);
-				/*
-				 * NOTE this is duplicated from RoomDecorator - change into method
-				 */
-				Dungeons2.log.debug("Adding boss chest @ " + chestCoords.toShortString());
-			}
-
-			// remove from list
-			floorZone.remove(floorEntry);
-		} else {
-			Dungeons2.log.debug("Boss Chest has no floor support");
-			chestCoords = null;
-		}
-		return chestCoords;
-	}
-
-	/**
-	 * 
-	 */
-	@Deprecated
-	@Override
-	public void decorate(AsyncWorldEditor world, Random random, IDungeonsBlockProvider provider, Room room,
-			LevelConfig config) {
-		Dungeons2.log.debug("In Boos Room Decorator.");
-		List<Entry<DesignElement, ICoords>> surfaceAirZone = room.getFloorMap().entries().stream()
-				.filter(x -> x.getKey().getFamily() == DesignElement.SURFACE_AIR).collect(Collectors.toList());
-		if (surfaceAirZone == null || surfaceAirZone.isEmpty())
-			return;
-
-		List<Entry<DesignElement, ICoords>> wallZone;
-		List<Entry<DesignElement, ICoords>> floorZone;
-
-		// get the floor only (from the air zone)
-		floorZone = surfaceAirZone.stream().filter(f -> f.getKey() == DesignElement.FLOOR_AIR)
-				.collect(Collectors.toList());
-
-		// decorate with carpet
-		// DyeColor dye = DyeColor.values()[random.nextInt(DyeColor.values().length)];
-
-		// cover floor with carpet
-		Material carpet = GroupHelper.CARPETS.get(random.nextInt(GroupHelper.CARPETS.size()));
-		for (Entry<DesignElement, ICoords> entry : floorZone) {
-			if (random.nextInt(100) < CARPET_PERCENT_CHANCE) {
-				DesignElement elem = entry.getKey();
-				ICoords coords = entry.getValue();
-				// check if the adjoining block exists
-				if (hasSupport(world, coords, elem, provider.getLocation(coords, room, room.getLayout()))) {
-					// update the world
-					world.setBlockState(coords.toPos(), carpet, 3);
-				}
-			}
-		}
-
-		// get the walls only (from the air zone)
-		wallZone = surfaceAirZone.stream().filter(f -> f.getKey() == DesignElement.WALL_AIR)
-				.collect(Collectors.toList());
-
-		// add paintings
-		// TODO Do Second
-		for (int i = 0; i < 4; i++) {
-			Entry<DesignElement, ICoords> entry = wallZone.get(random.nextInt(wallZone.size()));
-//            ICoords coords = entry.getValue();
-//            Location location = provider.getLocation(coords, room, room.getLayout());
-//            EnumFacing facing = location.getFacing();
-//            if (location != null) {
-//                EntityHanging entityhanging = new EntityPainting(world, coords.toPos(), facing);
-//                if (entityhanging != null && entityhanging.onValidSurface()) {
-//                    if (WorldInfo.isServerSide(world)/*!world.isRemote*/) {
-//                        entityhanging.playPlaceSound();
-//                        world.spawnEntity(entityhanging);
-//                    }
-//                }
-//            }
-			wallZone.remove(entry);
-		}
-
-		// TODO add pedestal/alter
-
-		/*
-		 * add chest
-		 */
-		// select a random position on the floor
-		Entry<DesignElement, ICoords> floorEntry = floorZone.get(random.nextInt(floorZone.size()));
-		DesignElement elem = floorEntry.getKey();
-		ICoords chestCoords = floorEntry.getValue();
-		// determine location in room
-		Location location = provider.getLocation(chestCoords, room, room.getLayout());
-		if (hasSupport(world, chestCoords, elem, location)) {
-			BlockFace facing = orientChest(location);
-			// place a chest
-			Chest_Later.generate_later(world, random, chestCoords, Rarity.EPIC, GroupHelper.CHEST.get(facing));
-			// remove from list
-			floorZone.remove(floorEntry);
-		} else {
-			Dungeons2.log.debug("Boss Chest has no floor support");
-		}
-	}
-
-	/**
-	 * @return the lootLoader
-	 */
-	@Override
-	public ILootLoader getLootLoader() {
-		return lootLoader;
-	}
-
-	/**
-	 * @param lootLoader the lootLoader to set
-	 */
-	@Override
-	public final void setLootLoader(ILootLoader loader) {
-		this.lootLoader = loader;
-	}
+    /**
+     * @param lootLoader the lootLoader to set
+     */
+    @Override
+    public final void setLootLoader(ILootLoader loader) {
+        this.lootLoader = loader;
+    }
 }

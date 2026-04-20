@@ -1,5 +1,7 @@
 package forge_sandbox.twilightforest.structures.minotaurmaze;
 
+import java.util.Random;
+
 //import net.minecraft.init.Blocks;
 //import net.minecraft.world.World;
 //import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -7,8 +9,6 @@ import forge_sandbox.StructureBoundingBox;
 import forge_sandbox.twilightforest.TFFeature;
 //import twilightforest.block.BlockTFPlant;
 //import twilightforest.block.TFBlocks;
-
-import java.util.Random;
 import otd.lib.async.AsyncWorldEditor;
 
 //import static twilightforest.enums.PlantVariant.ROOT_STRAND;

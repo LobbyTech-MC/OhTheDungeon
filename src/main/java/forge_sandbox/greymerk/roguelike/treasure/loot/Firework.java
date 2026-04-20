@@ -1,13 +1,14 @@
 package forge_sandbox.greymerk.roguelike.treasure.loot;
 
 import java.util.Random;
+
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
-
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+
 import otd.util.ColorUtil;
 
 public class Firework {

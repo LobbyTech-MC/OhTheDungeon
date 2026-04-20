@@ -1,6 +1,5 @@
 package forge_sandbox.greymerk.roguelike.worldgen;
 
-import forge_sandbox.greymerk.roguelike.worldgen.blocks.StairType;
 import org.bukkit.Material;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Stairs;
@@ -8,6 +7,8 @@ import org.bukkit.block.data.type.Stairs;
 //import net.minecraft.block.BlockStairs;
 //import net.minecraft.block.BlockStairs.EnumHalf;
 //import net.minecraft.block.state.IBlockState;
+
+import forge_sandbox.greymerk.roguelike.worldgen.blocks.StairType;
 
 public class MetaStair extends MetaBlock implements IStair {
 

@@ -3,14 +3,16 @@
  */
 package forge_sandbox.com.someguyssoftware.gottschcore.positional;
 
+import static java.lang.Math.floor;
+
 import javax.annotation.concurrent.Immutable;
 
-import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
+import org.bukkit.block.BlockFace;
+
 import forge_sandbox.BlockPos;
 import forge_sandbox.ChunkPos;
 import forge_sandbox.Vec3d;
-import static java.lang.Math.floor;
-import org.bukkit.block.BlockFace;
+import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
 
 /**
  * For Forge 1.8+

@@ -1,6 +1,30 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import org.bukkit.Axis;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Orientable;
+import org.bukkit.block.data.type.Ladder;
+import org.bukkit.block.data.type.Piston;
+import org.bukkit.block.data.type.Repeater;
+import org.bukkit.block.data.type.Slab;
+import org.bukkit.block.data.type.Stairs;
+import org.bukkit.block.data.type.Switch;
+import org.bukkit.entity.EntityType;
+
+import forge_sandbox.BlockPos;
 import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
+import forge_sandbox.twilightforest.TFTreasure;
+import forge_sandbox.twilightforest.structures.RotationUtil;
+import forge_sandbox.twilightforest.structures.StructureTFComponent;
 import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
 import forge_sandbox.twilightforest.structures.StructureTFDecorator;
 import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerRoof;
@@ -9,31 +33,8 @@ import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerRoofFen
 import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerRoofGableForwards;
 import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerRoofSlabForwards;
 import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerWing;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import org.bukkit.block.BlockFace;
-import otd.util.RotationMirror.Rotation;
 import otd.lib.async.AsyncWorldEditor;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponent;
-import forge_sandbox.twilightforest.structures.RotationUtil;
-import forge_sandbox.BlockPos;
-import org.bukkit.Axis;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Orientable;
-import org.bukkit.block.data.type.Stairs;
-import org.bukkit.entity.EntityType;
-import forge_sandbox.twilightforest.TFTreasure;
-import org.bukkit.block.data.type.Ladder;
-import org.bukkit.block.data.type.Piston;
-import org.bukkit.block.data.type.Repeater;
-import org.bukkit.block.data.type.Slab;
-import org.bukkit.block.data.type.Switch;
+import otd.util.RotationMirror.Rotation;
 
 public class ComponentTFDarkTowerWing extends ComponentTFTowerWing {
 	protected boolean keyTower = false;

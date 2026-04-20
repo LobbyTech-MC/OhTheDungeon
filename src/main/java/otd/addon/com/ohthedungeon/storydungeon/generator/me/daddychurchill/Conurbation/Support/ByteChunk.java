@@ -4,8 +4,9 @@
 
 package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support;
 
-import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 import org.bukkit.Material;
+
+import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 
 public class ByteChunk {
 	public int chunkX;

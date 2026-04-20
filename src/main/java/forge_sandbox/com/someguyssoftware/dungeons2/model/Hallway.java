@@ -4,6 +4,7 @@
 package forge_sandbox.com.someguyssoftware.dungeons2.model;
 
 import java.util.ArrayList;
+
 import forge_sandbox.com.someguyssoftware.gottschcore.enums.Alignment;
 
 /**

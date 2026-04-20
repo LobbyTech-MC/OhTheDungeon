@@ -1,12 +1,13 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
-import forge_sandbox.twilightforest.TFFeature;
-
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.block.BlockFace;
-import otd.util.RotationMirror.Rotation;
+
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import otd.util.RotationMirror.Rotation;
 
 public class ComponentTFDarkTowerBossBridge extends ComponentTFDarkTowerBridge {
 

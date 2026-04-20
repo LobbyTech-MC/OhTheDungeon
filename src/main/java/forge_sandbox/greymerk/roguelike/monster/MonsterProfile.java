@@ -2,6 +2,13 @@ package forge_sandbox.greymerk.roguelike.monster;
 
 import java.util.Random;
 
+import org.bukkit.World;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Zombie;
+//import net.minecraft.entity.monster.EntitySkeleton;
+//import net.minecraft.entity.monster.EntityZombie;
+//import net.minecraft.world.World;
+
 import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileArcher;
 import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileAshlea;
 import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileBaby;
@@ -21,12 +28,6 @@ import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileVindicator;
 import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileWitch;
 import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileWither;
 import forge_sandbox.greymerk.roguelike.monster.profiles.ProfileZombie;
-import org.bukkit.World;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Zombie;
-//import net.minecraft.entity.monster.EntitySkeleton;
-//import net.minecraft.entity.monster.EntityZombie;
-//import net.minecraft.world.World;
 
 public enum MonsterProfile {
 

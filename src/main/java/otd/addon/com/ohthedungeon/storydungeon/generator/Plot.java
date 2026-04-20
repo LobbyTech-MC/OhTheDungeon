@@ -5,9 +5,11 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.generator;
 
-import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 import java.util.Random;
+
 import org.bukkit.Material;
+
+import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 
 /**
  *

@@ -1,6 +1,5 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 //import net.minecraft.block.Block;
 //import net.minecraft.block.BlockLeaves;
@@ -8,6 +7,8 @@ import org.bukkit.Material;
 //import net.minecraft.block.BlockOldLeaf;
 //import net.minecraft.block.BlockPlanks;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class Leaves {
 

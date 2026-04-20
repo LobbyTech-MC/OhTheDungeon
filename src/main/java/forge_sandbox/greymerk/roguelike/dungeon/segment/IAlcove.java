@@ -1,11 +1,11 @@
 package forge_sandbox.greymerk.roguelike.dungeon.segment;
 
+import java.util.Random;
+
 import forge_sandbox.greymerk.roguelike.dungeon.settings.LevelSettings;
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-
-import java.util.Random;
 
 public interface IAlcove {
 

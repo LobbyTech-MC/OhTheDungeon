@@ -1,19 +1,22 @@
 package forge_sandbox.twilightforest.structures;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.BlockPos;
 import java.util.List;
 import java.util.Random;
+
 import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+
+import forge_sandbox.BlockPos;
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
+import otd.lib.async.AsyncWorldEditor;
 import otd.util.RotationMirror;
 import otd.util.RotationMirror.Mirror;
 import otd.util.RotationMirror.Rotation;
-import otd.lib.async.AsyncWorldEditor;
-import forge_sandbox.twilightforest.TFFeature;
 
 public abstract class StructureTFComponent {
 

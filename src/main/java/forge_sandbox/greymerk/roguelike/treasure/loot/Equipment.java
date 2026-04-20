@@ -1,6 +1,7 @@
 package forge_sandbox.greymerk.roguelike.treasure.loot;
 
 import java.util.Arrays;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

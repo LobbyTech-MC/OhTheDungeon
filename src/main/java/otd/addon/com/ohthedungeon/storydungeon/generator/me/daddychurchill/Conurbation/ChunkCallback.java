@@ -4,10 +4,11 @@
 
 package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation;
 
+import java.util.Random;
+
 import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 import otd.addon.com.ohthedungeon.storydungeon.generator.BaseGenerator;
 import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
-import java.util.Random;
 
 public class ChunkCallback extends BaseGenerator {
 	private WorldConfig config;

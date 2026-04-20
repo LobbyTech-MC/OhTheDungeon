@@ -1,5 +1,14 @@
 package otd.lib.net.querz.nbt.io;
 
+import java.io.Closeable;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
 import otd.lib.net.querz.io.ExceptionTriConsumer;
 import otd.lib.net.querz.io.MaxDepthIO;
 import otd.lib.net.querz.nbt.tag.ByteArrayTag;
@@ -16,15 +25,6 @@ import otd.lib.net.querz.nbt.tag.LongTag;
 import otd.lib.net.querz.nbt.tag.ShortTag;
 import otd.lib.net.querz.nbt.tag.StringTag;
 import otd.lib.net.querz.nbt.tag.Tag;
-
-import java.io.Closeable;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LittleEndianNBTOutputStream implements DataOutput, NBTOutput, MaxDepthIO, Closeable {
 

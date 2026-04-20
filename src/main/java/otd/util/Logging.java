@@ -17,6 +17,7 @@
 package otd.util;
 
 import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 
 public class Logging {

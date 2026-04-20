@@ -1,10 +1,10 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
+import java.util.Random;
+
 import forge_sandbox.StructureBoundingBox;
 import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerWing;
-
-import java.util.Random;
 import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFDarkTowerRoofFourPost extends ComponentTFDarkTowerRoof {

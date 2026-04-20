@@ -4,11 +4,13 @@
 
 package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Plats;
 
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.HouseFactory;
 import java.util.Random;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
+
 import org.bukkit.Material;
+
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.HouseFactory;
 
 public class EstateGenerator extends PlatGenerator {
 	private static final Material matGround;

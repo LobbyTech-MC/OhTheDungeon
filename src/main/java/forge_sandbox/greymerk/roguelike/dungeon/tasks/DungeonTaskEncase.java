@@ -9,9 +9,9 @@ import forge_sandbox.greymerk.roguelike.dungeon.IDungeonLevel;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.ISettings;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import forge_sandbox.greymerk.roguelike.worldgen.filter.Filter;
-import otd.lib.DungeonWorldManager;
 //import forge_sandbox.greymerk.roguelike.worldgen.shapes.RectSolid;
 import otd.config.WorldConfig;
+import otd.lib.DungeonWorldManager;
 
 public class DungeonTaskEncase implements IDungeonTask {
 

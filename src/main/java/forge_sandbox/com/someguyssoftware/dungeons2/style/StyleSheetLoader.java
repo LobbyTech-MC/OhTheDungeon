@@ -5,6 +5,7 @@ package forge_sandbox.com.someguyssoftware.dungeons2.style;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,10 +34,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+
 import forge_sandbox.com.someguyssoftware.dungeons2.Dungeons2;
 import forge_sandbox.com.someguyssoftware.dungeons2.config.ModConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.json.JSMin;
-import java.io.File;
 import otd.Main;
 
 /**

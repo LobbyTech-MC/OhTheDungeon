@@ -1,7 +1,9 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
 import java.util.Random;
+
 import org.bukkit.Material;
+
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
 
 public class StructureTFTowerWoods extends StructureTFComponent.BlockSelector {

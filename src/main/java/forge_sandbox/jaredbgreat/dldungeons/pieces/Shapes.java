@@ -1,15 +1,24 @@
 package forge_sandbox.jaredbgreat.dldungeons.pieces;
 
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.cgroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.egroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.fgroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.igroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.lgroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.ogroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.sgroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.tgroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.ugroup;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.xgroup;
+
+import java.util.Random;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
  */
 
 import forge_sandbox.jaredbgreat.dldungeons.planner.Symmetry;
-
-import java.util.Random;
-
-import static forge_sandbox.jaredbgreat.dldungeons.pieces.Shape.*;
 
 /**
  * Families of shapes, each representing a single shape in each of its

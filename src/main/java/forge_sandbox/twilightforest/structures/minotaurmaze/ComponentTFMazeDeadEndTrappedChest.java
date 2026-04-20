@@ -1,14 +1,15 @@
 package forge_sandbox.twilightforest.structures.minotaurmaze;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.TFTreasure;
+import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFMazeDeadEndTrappedChest extends ComponentTFMazeDeadEnd {
 

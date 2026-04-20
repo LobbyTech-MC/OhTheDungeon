@@ -16,8 +16,9 @@
  */
 package forge_sandbox;
 
-import com.google.common.base.MoreObjects;
 import org.bukkit.block.BlockFace;
+
+import com.google.common.base.MoreObjects;
 
 public class StructureBoundingBox {
 	public int minX;

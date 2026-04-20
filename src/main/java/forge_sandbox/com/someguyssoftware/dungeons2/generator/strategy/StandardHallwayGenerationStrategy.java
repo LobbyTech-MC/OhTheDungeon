@@ -1,6 +1,3 @@
-/**
- * 
- */
 package forge_sandbox.com.someguyssoftware.dungeons2.generator.strategy;
 
 import java.util.ArrayList;
@@ -8,7 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
+import forge_sandbox.AxisAlignedBB;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.AbstractRoomGenerationStrategy;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.Arrangement;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.blockprovider.IDungeonsBlockProvider;
@@ -21,265 +29,184 @@ import forge_sandbox.com.someguyssoftware.dungeons2.style.Theme;
 import forge_sandbox.com.someguyssoftware.dungeonsengine.config.ILevelConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.Coords;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import forge_sandbox.AxisAlignedBB;
-import org.bukkit.block.data.BlockData;
 import otd.lib.async.AsyncWorldEditor;
 
-/**
- * Builds a structure using the base rule set ie. all blocks are generated
- * regardless of location, adjacent blocks etc.
- * 
- * @author Mark Gottschling on Aug 27, 2016
- *
- */
 public class StandardHallwayGenerationStrategy extends AbstractRoomGenerationStrategy {
-	/*
-	 * a list of all the rooms in the level
-	 */
-	private List<Room> rooms;
-
-	/*
-	 * a list of generated hallways
-	 */
-	private List<Hallway> hallways;
-
-//    /**
-//     * 
-//     * @param blockProvider
-//     */
-//    public StandardHallwayGenerationStrategy(IDungeonsBlockProvider blockProvider) {
-//        setBlockProvider(blockProvider);
-//    }
-
-	/**
-	 * 
-	 * @param blockProvider
-	 * @param rooms
-	 * @param hallways
-	 */
-	public StandardHallwayGenerationStrategy(IDungeonsBlockProvider blockProvider, List<Room> rooms,
-			List<Hallway> hallways) {
-		super(blockProvider);
-		// setBlockProvider(blockProvider);
-		setRooms(rooms);
-		setHallways(hallways);
-	}
-
-	@Override
-	public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
-			ILevelConfig config) {
-		Hallway hallway = (Hallway) room;
-		BlockData blockState;
-		Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
-//        Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
-
-		// collect a list of rooms that the hallway intersects against
-		List<Room> intersectRooms = new ArrayList<>();
-		for (Room otherRoom : getRooms()) {
-			if (hallway.getBoundingBox().intersects(otherRoom.getBoundingBox())) {
-//                Dungeons2.log.debug("Hallway intersects with Room: " + room);
-				intersectRooms.add(otherRoom);
-			}
-		}
-
-		// generate the room
-		for (int y = 0; y < room.getHeight(); y++) {
-			// first pass
-			for (int z = 0; z < room.getDepth(); z++) {
-				for (int x = 0; x < room.getWidth(); x++) {
-
-					// create index coords
-					ICoords indexCoords = new Coords(x, y, z);
-					// get the world coords
-					ICoords worldCoords = room.getCoords().add(indexCoords);
-
-					// get the design arrangement of the block @ xyz
-					Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
-
-					// if element is of a type that requires post-processing, save for processing
-					// after the rest of the room is generated
-					if (isPostProcessed(arrangement, worldCoords, postProcessMap))
-						continue;
-
-					// get the block state
-					blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-							styleSheet, config);
-
-					AxisAlignedBB box = new AxisAlignedBB(worldCoords.toPos());
-					boolean buildBlock = true;
-					if (arrangement.getElement() != DesignElement.AIR) {
-						// get the bounding boxes of the rooms the doors are connected to
-						// NOTE may have to change to list in the future if more than 2 doors per hall
-						AxisAlignedBB bb1 = hallway.getDoors().size() > 0 && hallway.getDoors().get(0) != null
-								? hallway.getDoors().get(0).getRoom().getBoundingBox()
-								: null;
-						AxisAlignedBB bb2 = hallway.getDoors().size() > 1 && hallway.getDoors().get(1) != null
-								? hallway.getDoors().get(1).getRoom().getBoundingBox()
-								: null;
-
-						// first check the wayline rooms
-						if ((bb1 != null && box.intersects(bb1)) || (bb2 != null && box.intersects(bb2))) {
-							buildBlock = false;
-						}
-						// second, check against any rooms in the level that the hallway intersects with
-						if (buildBlock) {
-							for (Room r : intersectRooms) {
-								AxisAlignedBB bb = r.getBoundingBox();
-								if (box.intersects(bb)) {
-//                                    Dungeons2.log.debug(String.format("Hallway @ %s intersects with room @ %s", box, bb));
-									buildBlock = false;
-									break;
-								}
-							}
-						}
-						// lastly, check against all other hallways
-						if (buildBlock) {
-							for (Room r : getHallways()) {
-								AxisAlignedBB bb = r.getBoundingBox();
-								if (box.intersects(bb)) {
-//                                    Dungeons2.log.debug(String.format("Hallway @ %s intersects with hallway @ %s", box, bb));
-									buildBlock = false;
-									break;
-								}
-							}
-						}
-					}
-					// update the world with the blockState
-					world.setBlockState(worldCoords.toPos(), blockState, 3);
-				}
-			}
-		}
-		// generate the post processing blocks
-		postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
-	}
-
-	/**
-	 * 
-	 */
-	@Override
-	@Deprecated
-	public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
-			LevelConfig config) {
-		Hallway hallway = (Hallway) room;
-		BlockData blockState;
-		Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
-		// Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
-
-		// collect a list of rooms that the hallway intersects against
-		List<Room> intersectRooms = new ArrayList<>();
-		for (Room otherRoom : getRooms()) {
-			if (hallway.getBoundingBox().intersects(otherRoom.getBoundingBox())) {
-//                Dungeons2.log.debug("Hallway intersects with Room: " + room);
-				intersectRooms.add(otherRoom);
-			}
-		}
-
-		// generate the room
-		for (int y = 0; y < room.getHeight(); y++) {
-			// first pass
-			for (int z = 0; z < room.getDepth(); z++) {
-				for (int x = 0; x < room.getWidth(); x++) {
-
-					// create index coords
-					ICoords indexCoords = new Coords(x, y, z);
-					// get the world coords
-					ICoords worldCoords = room.getCoords().add(indexCoords);
-
-					// get the design arrangement of the block @ xyz
-					Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
-
-					// if element is of a type that requires post-processing, save for processing
-					// after the rest of the room is generated
-					if (isPostProcessed(arrangement, worldCoords, postProcessMap))
-						continue;
-
-					// get the block state
-					blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-							styleSheet, config);
-					if (blockState == IDungeonsBlockProvider.NULL_BLOCK)
-						continue;
-
-					AxisAlignedBB box = new AxisAlignedBB(worldCoords.toPos());
-					boolean buildBlock = true;
-					if (arrangement.getElement() != DesignElement.AIR) {
-						// get the bounding boxes of the rooms the doors are connected to
-						// NOTE may have to change to list in the future if more than 2 doors per hall
-						AxisAlignedBB bb1 = hallway.getDoors().size() > 0 && hallway.getDoors().get(0) != null
-								? hallway.getDoors().get(0).getRoom().getBoundingBox()
-								: null;
-						AxisAlignedBB bb2 = hallway.getDoors().size() > 1 && hallway.getDoors().get(1) != null
-								? hallway.getDoors().get(1).getRoom().getBoundingBox()
-								: null;
-
-						// first check the wayline rooms
-						if ((bb1 != null && box.intersects(bb1)) || (bb2 != null && box.intersects(bb2))) {
-							buildBlock = false;
-						}
-
-						// second, check against any rooms in the level that the hallway intersects with
-						if (buildBlock) {
-							for (Room r : intersectRooms) {
-								AxisAlignedBB bb = r.getBoundingBox();
-								if (box.intersects(bb)) {
-//                                    Dungeons2.log.debug(String.format("Hallway @ %s intersects with room @ %s", box, bb));
-									buildBlock = false;
-									break;
-								}
-							}
-						}
-
-						// lastly, check against all other hallways
-						if (buildBlock) {
-							for (Room r : getHallways()) {
-								AxisAlignedBB bb = r.getBoundingBox();
-								if (box.intersects(bb)) {
-//                                    Dungeons2.log.debug(String.format("Hallway @ %s intersects with hallway @ %s", box, bb));
-									buildBlock = false;
-									break;
-								}
-							}
-						}
-
-					}
-
-					// update the world with the blockState
-					if (blockState != null && buildBlock && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-						world.setBlockState(worldCoords.toPos(), blockState, 3);
-					}
-				}
-			}
-		}
-
-		// generate the post processing blocks
-		postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
-
-	}
-
-	/**
-	 * @return the hallways
-	 */
-	public List<Hallway> getHallways() {
-		return hallways;
-	}
-
-	/**
-	 * @param hallways the hallways to set
-	 */
-	public final void setHallways(List<Hallway> hallways) {
-		this.hallways = hallways;
-	}
-
-	/**
-	 * @return the rooms
-	 */
-	public List<Room> getRooms() {
-		return rooms;
-	}
-
-	/**
-	 * @param rooms the rooms to set
-	 */
-	public final void setRooms(List<Room> rooms) {
-		this.rooms = rooms;
-	}
+    
+    private List<Room> rooms;
+    private List<Hallway> hallways;
+    
+    // 缓存常用的 BlockState
+    private final Map<Material, BlockState> blockStateCache = new ConcurrentHashMap<>();
+    
+    public StandardHallwayGenerationStrategy(IDungeonsBlockProvider blockProvider, List<Room> rooms,
+            List<Hallway> hallways) {
+        super(blockProvider);
+        setRooms(rooms);
+        setHallways(hallways);
+    }
+    
+    @Override
+    public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
+            ILevelConfig config) {
+        Hallway hallway = (Hallway) room;
+        Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
+        
+        // 收集与走廊相交的房间列表
+        List<Room> intersectRooms = getIntersectingRooms(hallway);
+        
+        // 使用 FAWE EditSession 批量生成
+        try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                .world(BukkitAdapter.adapt(world.getWorld()))
+                .allowedRegionsEverywhere()
+                .limitUnlimited()
+                .changeSetNull()
+                .fastMode(true)
+                .build()) {
+            
+            // 预计算所有需要设置的方块
+            Map<BlockVector3, BlockState> blocksToSet = new HashMap<>();
+            
+            // 预计算边界框，避免重复计算
+            List<AxisAlignedBB> doorBBs = getDoorBoundingBoxes(hallway);
+            List<AxisAlignedBB> hallwayBBs = getHallwayBoundingBoxes();
+            
+            for (int y = 0; y < room.getHeight(); y++) {
+                for (int z = 0; z < room.getDepth(); z++) {
+                    for (int x = 0; x < room.getWidth(); x++) {
+                        
+                        ICoords indexCoords = new Coords(x, y, z);
+                        ICoords worldCoords = room.getCoords().add(indexCoords);
+                        
+                        Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
+                        
+                        // 检查是否需要后处理 - 使用 postProcessMap
+                        if (isPostProcessed(arrangement, worldCoords, postProcessMap)) {
+                            continue;
+                        }
+                        
+                        BlockData blockData = getBlockProvider().getBlockState(random, worldCoords, room,
+                                arrangement, theme, styleSheet, config);
+                        
+                        if (blockData == IDungeonsBlockProvider.NULL_BLOCK) {
+                            continue;
+                        }
+                        
+                        boolean shouldBuild = shouldBuildBlock(worldCoords, arrangement, 
+                                doorBBs, intersectRooms, hallwayBBs);
+                        
+                        if (shouldBuild) {
+                            BlockVector3 position = BlockVector3.at(
+                                worldCoords.getX(),
+                                worldCoords.getY(),
+                                worldCoords.getZ()
+                            );
+                            BlockState blockState = getCachedBlockState(blockData);
+                            blocksToSet.put(position, blockState);
+                        }
+                    }
+                }
+            }
+            
+            // 批量设置所有方块
+            for (Map.Entry<BlockVector3, BlockState> entry : blocksToSet.entrySet()) {
+                editSession.setBlock(entry.getKey(), entry.getValue());
+            }
+            
+            editSession.flushQueue();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 生成后处理方块 - 使用 postProcessMap
+        postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
+    }
+    
+    private List<Room> getIntersectingRooms(Hallway hallway) {
+        List<Room> intersectRooms = new ArrayList<>();
+        for (Room otherRoom : getRooms()) {
+            if (hallway.getBoundingBox().intersects(otherRoom.getBoundingBox())) {
+                intersectRooms.add(otherRoom);
+            }
+        }
+        return intersectRooms;
+    }
+    
+    private List<AxisAlignedBB> getDoorBoundingBoxes(Hallway hallway) {
+        List<AxisAlignedBB> doorBBs = new ArrayList<>();
+        for (int i = 0; i < hallway.getDoors().size() && i < 2; i++) {
+            if (hallway.getDoors().get(i) != null && hallway.getDoors().get(i).getRoom() != null) {
+                doorBBs.add(hallway.getDoors().get(i).getRoom().getBoundingBox());
+            }
+        }
+        return doorBBs;
+    }
+    
+    private List<AxisAlignedBB> getHallwayBoundingBoxes() {
+        List<AxisAlignedBB> hallwayBBs = new ArrayList<>();
+        for (Room r : getHallways()) {
+            hallwayBBs.add(r.getBoundingBox());
+        }
+        return hallwayBBs;
+    }
+    
+    private boolean shouldBuildBlock(ICoords worldCoords, Arrangement arrangement,
+                                    List<AxisAlignedBB> doorBBs, List<Room> intersectRooms,
+                                    List<AxisAlignedBB> hallwayBBs) {
+        if (arrangement.getElement() == DesignElement.AIR) {
+            return true;
+        }
+        
+        AxisAlignedBB box = new AxisAlignedBB(worldCoords.toPos());
+        
+        for (AxisAlignedBB doorBB : doorBBs) {
+            if (box.intersects(doorBB)) {
+                return false;
+            }
+        }
+        
+        for (Room r : intersectRooms) {
+            if (box.intersects(r.getBoundingBox())) {
+                return false;
+            }
+        }
+        
+        for (AxisAlignedBB hallwayBB : hallwayBBs) {
+            if (box.intersects(hallwayBB)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    protected BlockState getCachedBlockState(BlockData blockData) {
+        Material material = blockData.getMaterial();
+        return blockStateCache.computeIfAbsent(material, 
+            m -> BukkitAdapter.adapt(blockData));
+    }
+    
+    @Override
+    @Deprecated
+    public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
+            LevelConfig config) {
+        generate(world, random, room, theme, styleSheet, (ILevelConfig) config);
+    }
+    
+    public List<Hallway> getHallways() {
+        return hallways;
+    }
+    
+    public final void setHallways(List<Hallway> hallways) {
+        this.hallways = hallways;
+    }
+    
+    public List<Room> getRooms() {
+        return rooms;
+    }
+    
+    public final void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
 }

@@ -3,9 +3,10 @@ package forge_sandbox.greymerk.roguelike.treasure.loot;
 import java.util.HashMap;
 import java.util.Map;
 
-import forge_sandbox.greymerk.roguelike.util.IWeighted;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.item.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.util.IWeighted;
 
 public class LootProvider implements ILoot {
 

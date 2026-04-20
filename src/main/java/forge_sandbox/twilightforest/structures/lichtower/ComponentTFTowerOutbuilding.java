@@ -1,14 +1,15 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.block.BlockFace;
-import otd.util.RotationMirror.Rotation;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import otd.lib.async.AsyncWorldEditor;
+import otd.util.RotationMirror.Rotation;
 
 public class ComponentTFTowerOutbuilding extends ComponentTFTowerWing {
 

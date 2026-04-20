@@ -1,5 +1,14 @@
 package forge_sandbox.jaredbgreat.dldungeons.pieces.chests;
 
+import java.util.Random;
+
+import org.bukkit.Location;
+//import net.minecraft.tileentity.TileEntityChest;
+//import net.minecraft.util.math.BlockPos;
+//import net.minecraft.world.World;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -7,15 +16,6 @@ package forge_sandbox.jaredbgreat.dldungeons.pieces.chests;
 
 //import jaredbgreat.dldungeons.ConfigHandler;
 import forge_sandbox.jaredbgreat.dldungeons.builder.DBlock;
-
-import java.util.Random;
-import org.bukkit.Location;
-
-//import net.minecraft.tileentity.TileEntityChest;
-//import net.minecraft.util.math.BlockPos;
-//import net.minecraft.world.World;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 
 /**
  * Represents a weak / junk chest found in rooms without spawners and containing

@@ -2,9 +2,6 @@ package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.block.BlockFlower;
@@ -15,6 +12,10 @@ import org.bukkit.inventory.ItemStack;
 //import net.minecraft.item.ItemStack;
 //import net.minecraft.tileentity.TileEntity;
 //import net.minecraft.tileentity.TileEntityFlowerPot;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum FlowerPot {
 

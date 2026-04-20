@@ -6,8 +6,19 @@ package forge_sandbox.com.someguyssoftware.dungeons2.generator.strategy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 
 import com.google.common.collect.Multimap;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.AbstractRoomGenerationStrategy;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.Arrangement;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.ISupportedBlock;
@@ -22,329 +33,192 @@ import forge_sandbox.com.someguyssoftware.dungeons2.style.Theme;
 import forge_sandbox.com.someguyssoftware.dungeonsengine.config.ILevelConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.Coords;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
 import otd.lib.async.AsyncWorldEditor;
 
 /**
  * @author Mark Gottschling on Aug 28, 2016
- *
+ * @modified FAWE 2.15.1
  */
 public class SupportedRoomGenerationStrategy extends AbstractRoomGenerationStrategy {
 
-	/**
-	 * 
-	 * @param provider
-	 */
-	public SupportedRoomGenerationStrategy(IDungeonsBlockProvider provider) {
-		super(provider);
-	}
+    // 缓存常用的 BlockState
+    private final Map<Material, BlockState> blockStateCache = new ConcurrentHashMap<>();
+    
+    /**
+     * 
+     * @param provider
+     */
+    public SupportedRoomGenerationStrategy(IDungeonsBlockProvider provider) {
+        super(provider);
+    }
 
-	@Override
-	public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
-			ILevelConfig config) {
+    @Override
+    public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
+            ILevelConfig config) {
 
-		BlockData blockState;
-		SupportedBlockProcessor supportProcessor = new SupportedBlockProcessor(getBlockProvider(), room);
-		ISupportedBlock supportedBlock;
-		Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
-		Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
+        SupportedBlockProcessor supportProcessor = new SupportedBlockProcessor(getBlockProvider(), room);
+        Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
+        Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
 
-		// first pass
-		// generate the room
-		for (int y = 0; y < room.getHeight(); y++) {
-			// first pass
-			for (int z = 0; z < room.getDepth(); z++) {
-				for (int x = 0; x < room.getWidth(); x++) {
+        // 使用 FAWE EditSession
+        try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                .world(BukkitAdapter.adapt(world.getWorld()))
+                .allowedRegionsEverywhere()
+                .limitUnlimited()
+                .changeSetNull()
+                .fastMode(true)
+                .build()) {
+            
+            // 存储需要设置的方块
+            Map<BlockVector3, BlockState> blocksToSet = new HashMap<>();
+            // 存储需要设置为空气的方块（用于第二遍不支持的方块）
+            Map<BlockVector3, BlockState> airBlocksToSet = new HashMap<>();
+            
+            BlockData blockState;
+            ISupportedBlock supportedBlock;
 
-					// create index coords
-					ICoords indexCoords = new Coords(x, y, z);
-					// get the world coords
-					ICoords worldCoords = room.getCoords().add(indexCoords);
+            // 第一遍：正向遍历
+            for (int y = 0; y < room.getHeight(); y++) {
+                for (int z = 0; z < room.getDepth(); z++) {
+                    for (int x = 0; x < room.getWidth(); x++) {
 
-					// get the design arrangement of the block @ xyz
-					Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
+                        ICoords indexCoords = new Coords(x, y, z);
+                        ICoords worldCoords = room.getCoords().add(indexCoords);
 
-					// if element is of a type that requires post-processing, save for processing
-					// after the rest of the room is generated
-					if (isPostProcessed(arrangement, worldCoords, postProcessMap))
-						continue;
+                        Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
 
-					// get the block state
-					blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-							styleSheet, config);
+                        if (isPostProcessed(arrangement, worldCoords, postProcessMap)) {
+                            continue;
+                        }
 
-					// update support calculations for air
-					if (blockState == null || blockState.getMaterial() == Material.AIR
-							|| blockState == IDungeonsBlockProvider.NULL_BLOCK) {
-						// create a supported block instance
-						supportedBlock = new SupportedBlock(blockState, 100); // 100 = the block as been processed and
-																				// is in the world
-						// update the world with the blockState
-						if (blockState != null && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-							// add the design element to the blueprint (if floor level)
-//                            if (worldCoords.getY() == room.getMinY() + 1) blueprint.put(arrangement.getElement(), worldCoords);
-							// add the design element to the blueprint (if floor level or surface_air)
-							if (worldCoords.getY() == room.getMinY() + 1
-									|| arrangement.getElement().getFamily() == DesignElement.SURFACE_AIR) {
-								blueprint.put(arrangement.getElement(), worldCoords);
-							}
-						}
-					} else {
-						// apply the pass 1 support
-						// perform support rules and set the supportedBlock array
-						int amount = supportProcessor.applySupportRulesPass1(world, indexCoords, worldCoords,
-								arrangement.getElement());
-//                        Dungeons2.log.debug("Pass 1 Support amount:" + amount);
-						if (amount >= 100) {
-							supportedBlock = new SupportedBlock(blockState, 100);
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-//                            if (worldCoords.getY() == room.getMinY() + 1) blueprint.put(arrangement.getElement(), worldCoords);
-							// add the design element to the blueprint (if floor level or surface_air)
-							if (worldCoords.getY() == room.getMinY() + 1
-									|| arrangement.getElement().getFamily() == DesignElement.SURFACE_AIR) {
-								blueprint.put(arrangement.getElement(), worldCoords);
-							}
-						} else {
-							supportedBlock = new SupportedBlock(blockState, amount);
-						}
-					}
-					// update the supported block matrix
-					supportProcessor.getSupportMatrix()[y][z][x] = supportedBlock;
+                        blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
+                                styleSheet, config);
 
-				}
-			}
+                        // 处理空气和支持计算
+                        if (blockState == null || blockState.getMaterial() == Material.AIR
+                                || blockState == IDungeonsBlockProvider.NULL_BLOCK) {
+                            supportedBlock = new SupportedBlock(blockState, 100);
+                            if (blockState != null && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
+                                BlockVector3 pos = BlockVector3.at(
+                                    worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                                );
+                                blocksToSet.put(pos, getCachedBlockState(blockState));
+                                if (worldCoords.getY() == room.getMinY() + 1
+                                        || arrangement.getElement().getFamily() == DesignElement.SURFACE_AIR) {
+                                    blueprint.put(arrangement.getElement(), worldCoords);
+                                }
+                            }
+                        } else {
+                            int amount = supportProcessor.applySupportRulesPass1(world, indexCoords, worldCoords,
+                                    arrangement.getElement());
+                            if (amount >= 100) {
+                                supportedBlock = new SupportedBlock(blockState, 100);
+                                BlockVector3 pos = BlockVector3.at(
+                                    worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                                );
+                                blocksToSet.put(pos, getCachedBlockState(blockState));
+                                if (worldCoords.getY() == room.getMinY() + 1
+                                        || arrangement.getElement().getFamily() == DesignElement.SURFACE_AIR) {
+                                    blueprint.put(arrangement.getElement(), worldCoords);
+                                }
+                            } else {
+                                supportedBlock = new SupportedBlock(blockState, amount);
+                            }
+                        }
+                        supportProcessor.getSupportMatrix()[y][z][x] = supportedBlock;
+                    }
+                }
 
-			// second pass
-			for (int z = room.getDepth() - 1; z >= 0; z--) {
-				for (int x = room.getWidth() - 1; x >= 0; x--) {
-					// check matrix if this entry is less than 100, ie still need checks to
-					// determine if to place
-					supportedBlock = supportProcessor.getSupportMatrix()[y][z][x];
-					if (supportedBlock == null || supportedBlock.getAmount() < 100) {
+                // 第二遍：反向遍历
+                for (int z = room.getDepth() - 1; z >= 0; z--) {
+                    for (int x = room.getWidth() - 1; x >= 0; x--) {
+                        supportedBlock = supportProcessor.getSupportMatrix()[y][z][x];
+                        if (supportedBlock == null || supportedBlock.getAmount() < 100) {
 
-						// create index coords
-						ICoords indexCoords = new Coords(x, y, z);
-						// get the world coords
-						ICoords worldCoords = room.getCoords().add(indexCoords);
+                            ICoords indexCoords = new Coords(x, y, z);
+                            ICoords worldCoords = room.getCoords().add(indexCoords);
 
-						// get the element arrangement
-						Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room,
-								room.getLayout());
+                            Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room,
+                                    room.getLayout());
 
-						if (arrangement.getElement() != DesignElement.AIR) {
-							// get the block state
-							blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-									styleSheet, config);
-						} else {
-							blockState = Bukkit.createBlockData(Material.AIR);
-						}
+                            BlockData pass2BlockState;
+                            if (arrangement.getElement() != DesignElement.AIR) {
+                                pass2BlockState = getBlockProvider().getBlockState(random, worldCoords, room,
+                                        arrangement, theme, styleSheet, config);
+                            } else {
+                                pass2BlockState = Bukkit.createBlockData(Material.AIR);
+                            }
 
-						// if the block is air, update the world
-						if (blockState != null && blockState.getMaterial() == Material.AIR) {
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-						}
-						// else calculate the support
-						else {
-							// create a supported block with 0 support
-							supportedBlock = new SupportedBlock(blockState, 0);
+                            BlockVector3 pos = BlockVector3.at(
+                                worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                            );
 
-							// perform support rules to determine amount of support
-							int amount = supportProcessor.applySupportRulesPass2(world, indexCoords, worldCoords,
-									arrangement.getElement());
-//                            Dungeons2.log.debug("Pass 2 Support amount:" + amount);
-							// update supportBlock's amount of support
-							supportedBlock.setAmount(supportedBlock.getAmount() + amount);
-//                            Dungeons2.log.debug("Total Support amount:" + supportedBlock.getAmount());
-							// if amount is now greated than threshold, update the world
-							if (supportedBlock.getAmount() >= 100) {
-								world.setBlockState(worldCoords.toPos(), blockState, 3);
-								if (worldCoords.getY() == room.getMinY() + 1)
-									blueprint.put(arrangement.getElement(), worldCoords);
-							} else {
-								// not supported, set to air
-								world.setBlockState(worldCoords.toPos(), Material.AIR, 3);
-							}
-						}
-					}
-				}
-			}
-		}
-		// generate the post processing blocks
-		postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
-	}
+                            // 如果是空气，直接设置
+                            if (pass2BlockState != null && pass2BlockState.getMaterial() == Material.AIR) {
+                                blocksToSet.put(pos, getCachedBlockState(pass2BlockState));
+                            } else if (pass2BlockState != null) {
+                                // 计算支持度
+                                supportedBlock = new SupportedBlock(pass2BlockState, 0);
+                                int amount = supportProcessor.applySupportRulesPass2(world, indexCoords, worldCoords,
+                                        arrangement.getElement());
+                                supportedBlock.setAmount(supportedBlock.getAmount() + amount);
 
-	/*
-	 * This class uses a 2-pass bottom-up supportive method for generation. The
-	 * layout is known and set by the calling method as it selects the layout for
-	 * the room. The room contains the layout. The style is NOT known because each
-	 * element of the room needs to be processed. Therefor StyleSheet is passed to
-	 * the method. (non-Javadoc)
-	 * 
-	 * @see com.someguyssoftware.dungeons2.generator.IRoomGenerator#generate(net.
-	 * minecraft.world.World, com.someguyssoftware.dungeons2.model.Room,
-	 * com.someguyssoftware.dungeons2.style.Layout,
-	 * com.someguyssoftware.dungeons2.style.Style)
-	 */
-	@Deprecated
-	@Override
-	public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
-			LevelConfig config) {
+                                if (supportedBlock.getAmount() >= 100) {
+                                    blocksToSet.put(pos, getCachedBlockState(pass2BlockState));
+                                    if (worldCoords.getY() == room.getMinY() + 1) {
+                                        blueprint.put(arrangement.getElement(), worldCoords);
+                                    }
+                                } else {
+                                    // 不支持的方块设置为空气
+                                    airBlocksToSet.put(pos, getCachedBlockState(
+                                        Bukkit.createBlockData(Material.AIR)
+                                    ));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 批量设置所有方块（先设置普通方块）
+            for (Map.Entry<BlockVector3, BlockState> entry : blocksToSet.entrySet()) {
+                editSession.setBlock(entry.getKey(), entry.getValue());
+            }
+            
+            // 批量设置空气方块
+            for (Map.Entry<BlockVector3, BlockState> entry : airBlocksToSet.entrySet()) {
+                editSession.setBlock(entry.getKey(), entry.getValue());
+            }
+            
+            editSession.flushQueue();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 生成后处理方块
+        postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
+    }
 
-		BlockData blockState;
-		SupportedBlockProcessor supportProcessor = new SupportedBlockProcessor(getBlockProvider(), room);
-		ISupportedBlock supportedBlock;
-		Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
-		Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
+    /**
+     * 获取缓存的 BlockState
+     */
+    protected BlockState getCachedBlockState(BlockData blockData) {
+        if (blockData == null) {
+            return null;
+        }
+        Material material = blockData.getMaterial();
+        return blockStateCache.computeIfAbsent(material, 
+            m -> BukkitAdapter.adapt(blockData));
+    }
 
-		// first pass
-		// generate the room
-		for (int y = 0; y < room.getHeight(); y++) {
-			// first pass
-			for (int z = 0; z < room.getDepth(); z++) {
-				for (int x = 0; x < room.getWidth(); x++) {
-
-					// create index coords
-					ICoords indexCoords = new Coords(x, y, z);
-					// get the world coords
-					ICoords worldCoords = room.getCoords().add(indexCoords);
-
-					// get the design arrangement of the block @ xyz
-					Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
-
-					// if element is of a type that requires post-processing, save for processing
-					// after the rest of the room is generated
-					if (isPostProcessed(arrangement, worldCoords, postProcessMap))
-						continue;
-
-					// get the block state
-					blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-							styleSheet, config);
-
-					// TEMP
-//                    if (arrangement.getElement() == DesignElement.FACADE_SUPPORT) {
-//                    Dungeons2.log.debug(String.format("Element: %s, BlockState: %s @ %s", arrangement.getElement().getName(),
-//                            blockState.toString(), worldCoords.toShortString()));
-//                    }
-
-					// update support calculations for air
-					if (blockState == null || blockState.getMaterial() == Material.AIR
-							|| blockState == IDungeonsBlockProvider.NULL_BLOCK) {
-						// create a supported block instance
-						supportedBlock = new SupportedBlock(blockState, 100); // 100 = the block as been processed and
-																				// is in the world
-						// update the world with the blockState
-						if (blockState != null && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-							// add the design element to the blueprint (if floor level)
-//                            if (worldCoords.getY() == room.getMinY() + 1) blueprint.put(arrangement.getElement(), worldCoords);
-							// add the design element to the blueprint (if floor level or surface_air)
-							if (worldCoords.getY() == room.getMinY() + 1
-									|| arrangement.getElement().getFamily() == DesignElement.SURFACE_AIR) {
-								blueprint.put(arrangement.getElement(), worldCoords);
-							}
-						}
-					} else {
-						// apply the pass 1 support
-						// perform support rules and set the supportedBlock array
-						int amount = supportProcessor.applySupportRulesPass1(world, indexCoords, worldCoords,
-								arrangement.getElement());
-//                        Dungeons2.log.debug("Pass 1 Support amount:" + amount);
-						if (amount >= 100) {
-							supportedBlock = new SupportedBlock(blockState, 100);
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-//                            if (worldCoords.getY() == room.getMinY() + 1) blueprint.put(arrangement.getElement(), worldCoords);
-							// add the design element to the blueprint (if floor level or surface_air)
-							if (worldCoords.getY() == room.getMinY() + 1
-									|| arrangement.getElement().getFamily() == DesignElement.SURFACE_AIR) {
-								blueprint.put(arrangement.getElement(), worldCoords);
-							}
-						} else {
-							supportedBlock = new SupportedBlock(blockState, amount);
-						}
-					}
-					// update the supported block matrix
-					supportProcessor.getSupportMatrix()[y][z][x] = supportedBlock;
-
-				}
-			}
-
-			// second pass
-			for (int z = room.getDepth() - 1; z >= 0; z--) {
-				for (int x = room.getWidth() - 1; x >= 0; x--) {
-					// check matrix if this entry is less than 100, ie still need checks to
-					// determine if to place
-					supportedBlock = supportProcessor.getSupportMatrix()[y][z][x];
-					if (supportedBlock == null || supportedBlock.getAmount() < 100) {
-
-						// create index coords
-						ICoords indexCoords = new Coords(x, y, z);
-						// get the world coords
-						ICoords worldCoords = room.getCoords().add(indexCoords);
-
-						// get the element arrangement
-						Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room,
-								room.getLayout());
-
-						if (arrangement.getElement() != DesignElement.AIR) {
-							// get the block state
-							blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-									styleSheet, config);
-						} else {
-							blockState = Bukkit.createBlockData(Material.AIR);
-						}
-
-						// if the block is air, update the world
-						if (blockState != null && blockState.getMaterial() == Material.AIR) {
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-						}
-						// else calculate the support
-						else {
-							// create a supported block with 0 support
-							supportedBlock = new SupportedBlock(blockState, 0);
-
-							// perform support rules to determine amount of support
-							int amount = supportProcessor.applySupportRulesPass2(world, indexCoords, worldCoords,
-									arrangement.getElement());
-//                            Dungeons2.log.debug("Pass 2 Support amount:" + amount);
-							// update supportBlock's amount of support
-							supportedBlock.setAmount(supportedBlock.getAmount() + amount);
-//                            Dungeons2.log.debug("Total Support amount:" + supportedBlock.getAmount());
-							// if amount is now greated than threshold, update the world
-							if (supportedBlock.getAmount() >= 100) {
-								world.setBlockState(worldCoords.toPos(), blockState, 3);
-								if (worldCoords.getY() == room.getMinY() + 1)
-									blueprint.put(arrangement.getElement(), worldCoords);
-							} else {
-								// not supported, set to air
-								world.setBlockState(worldCoords.toPos(), Material.AIR, 3);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		// generate the post processing blocks
-		postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
-	}
-
-//    /**
-//     * @return the blockProvider
-//     */
-//    @Override
-//    public IDungeonsBlockProvider getBlockProvider() {
-//        return blockProvider;
-//    }
-//
-//    /**
-//     * @param blockProvider the blockProvider to set
-//     */
-//    @Override
-//    public void setBlockProvider(IDungeonsBlockProvider blockProvider) {
-//        this.blockProvider = blockProvider;
-//    }
-
+    /**
+     * @deprecated 使用新的 ILevelConfig 版本
+     */
+    @Deprecated
+    @Override
+    public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
+            LevelConfig config) {
+        generate(world, random, room, theme, styleSheet, (ILevelConfig) config);
+    }
 }

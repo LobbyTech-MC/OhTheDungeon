@@ -5,13 +5,15 @@
  */
 package forge_sandbox.twilightforest.structures;
 
-import com.google.common.collect.Lists;
-import forge_sandbox.StructureBoundingBox;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import otd.lib.async.AsyncWorldEditor;
+
+import com.google.common.collect.Lists;
+
+import forge_sandbox.StructureBoundingBox;
 import forge_sandbox.twilightforest.TFFeature;
+import otd.lib.async.AsyncWorldEditor;
 
 public abstract class StructureStartTFAbstract {
 	protected List<StructureTFComponent> components = Lists.<StructureTFComponent>newLinkedList();

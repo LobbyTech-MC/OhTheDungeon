@@ -1,10 +1,10 @@
 package otd.lib.net.querz.nbt.io;
 
-import otd.lib.net.querz.io.StringSerializer;
-import otd.lib.net.querz.nbt.tag.Tag;
-
 import java.io.IOException;
 import java.io.Writer;
+
+import otd.lib.net.querz.io.StringSerializer;
+import otd.lib.net.querz.nbt.tag.Tag;
 
 public class SNBTSerializer implements StringSerializer<Tag<?>> {
 

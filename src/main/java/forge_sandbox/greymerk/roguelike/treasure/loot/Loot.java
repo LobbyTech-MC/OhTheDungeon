@@ -1,10 +1,17 @@
 package forge_sandbox.greymerk.roguelike.treasure.loot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import com.google.gson.JsonObject;
-import forge_sandbox.Sandbox;
+import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import com.google.gson.JsonObject;
+
+import forge_sandbox.Sandbox;
 import forge_sandbox.greymerk.roguelike.treasure.loot.provider.ItemArmour;
 import forge_sandbox.greymerk.roguelike.treasure.loot.provider.ItemBlock;
 import forge_sandbox.greymerk.roguelike.treasure.loot.provider.ItemBrewing;
@@ -24,12 +31,6 @@ import forge_sandbox.greymerk.roguelike.treasure.loot.provider.ItemTool;
 import forge_sandbox.greymerk.roguelike.treasure.loot.provider.ItemWeapon;
 import forge_sandbox.greymerk.roguelike.util.IWeighted;
 import forge_sandbox.greymerk.roguelike.util.TextFormat;
-import java.util.ArrayList;
-import java.util.List;
-import org.bukkit.Material;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public enum Loot {
 

@@ -1,10 +1,11 @@
 package forge_sandbox.twilightforest.structures.minotaurmaze;
 
+import java.util.Random;
+
+import org.bukkit.block.BlockFace;
+
 import forge_sandbox.StructureBoundingBox;
 import forge_sandbox.twilightforest.TFFeature;
-
-import java.util.Random;
-import org.bukkit.block.BlockFace;
 import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFMazeCorridorIronFence extends ComponentTFMazeCorridor {

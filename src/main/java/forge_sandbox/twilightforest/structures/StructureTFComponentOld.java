@@ -1,15 +1,12 @@
 package forge_sandbox.twilightforest.structures;
 
-import forge_sandbox.BlockPos;
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.twilightforest.TFFeature;
-
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -19,14 +16,19 @@ import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.block.data.type.TripwireHook;
 import org.bukkit.entity.EntityType;
-import otd.util.RotationMirror.Mirror;
-import otd.util.RotationMirror.Rotation;
+
+import forge_sandbox.BlockPos;
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.twilightforest.TFBoss;
+import forge_sandbox.twilightforest.TFFeature;
+import forge_sandbox.twilightforest.TFTreasure;
 import otd.lib.async.AsyncWorldEditor;
 import otd.lib.async.later.twilightforest.Chest_Later;
 import otd.lib.async.later.twilightforest.SpawnerBoss_Later;
 import otd.lib.async.later.twilightforest.Spawner_Later;
-import forge_sandbox.twilightforest.TFBoss;
-import forge_sandbox.twilightforest.TFTreasure;
+import otd.util.RotationMirror.Mirror;
+import otd.util.RotationMirror.Rotation;
 
 public abstract class StructureTFComponentOld extends StructureTFComponent {
 

@@ -1,12 +1,12 @@
 package otd.lib.net.querz.nbt.io;
 
-import otd.lib.net.querz.io.StringDeserializer;
-import otd.lib.net.querz.nbt.tag.Tag;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.stream.Collectors;
+
+import otd.lib.net.querz.io.StringDeserializer;
+import otd.lib.net.querz.nbt.tag.Tag;
 
 public class SNBTDeserializer implements StringDeserializer<Tag<?>> {
 

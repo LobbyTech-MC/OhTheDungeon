@@ -6,13 +6,15 @@ package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conu
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.util.noise.NoiseGenerator;
-import org.bukkit.Material;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Neighbors.CityNeighbors;
 import java.util.Random;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
+
+import org.bukkit.Material;
+import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
+
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Neighbors.CityNeighbors;
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
 
 public class CityGenerator extends PlatGenerator {
 //    private static final double xHeightFactor = 2.0;

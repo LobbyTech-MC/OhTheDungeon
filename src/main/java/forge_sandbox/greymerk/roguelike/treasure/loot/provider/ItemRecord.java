@@ -1,9 +1,10 @@
 package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
-import forge_sandbox.greymerk.roguelike.treasure.loot.Record;
-
 import java.util.Random;
+
 import org.bukkit.inventory.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.Record;
 
 //import net.minecraft.item.ItemStack;
 

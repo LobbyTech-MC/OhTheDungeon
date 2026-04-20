@@ -1,10 +1,11 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
+import org.bukkit.Material;
+import org.bukkit.block.data.Directional;
+
 //import forge_sandbox.greymerk.roguelike.config.RogueConfig;
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
-import org.bukkit.Material;
-import org.bukkit.block.data.Directional;
 import otd.config.WorldConfig;
 //import net.minecraft.block.BlockAnvil;
 //import net.minecraft.init.Blocks;

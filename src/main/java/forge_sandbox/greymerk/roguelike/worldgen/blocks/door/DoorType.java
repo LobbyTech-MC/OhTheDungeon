@@ -1,9 +1,10 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks.door;
 
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 //import net.minecraft.block.state.IBlockState;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum DoorType {
 

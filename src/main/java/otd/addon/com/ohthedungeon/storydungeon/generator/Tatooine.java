@@ -5,10 +5,12 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.generator;
 
+import java.util.Random;
+
+import org.bukkit.Material;
+
 import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 import otd.addon.com.ohthedungeon.storydungeon.generator.noise.NoiseGenerator;
-import java.util.Random;
-import org.bukkit.Material;
 
 /**
  *

@@ -1,8 +1,9 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class Cake {
 

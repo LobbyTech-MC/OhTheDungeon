@@ -1,14 +1,15 @@
 package forge_sandbox.twilightforest.structures.minotaurmaze;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.block.BlockFace;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import otd.lib.async.AsyncWorldEditor;
 
 /**
  * This component is the base for the maze/ruins combo feature. There are

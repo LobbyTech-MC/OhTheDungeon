@@ -1,18 +1,19 @@
 package forge_sandbox.twilightforest.structures.minotaurmaze;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-import forge_sandbox.twilightforest.structures.TFMaze;
-
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import forge_sandbox.twilightforest.structures.TFMaze;
+import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFMinotaurMaze extends StructureTFComponentOld {
 

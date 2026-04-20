@@ -16,8 +16,9 @@
  */
 package otd.lib.async.later.roguelike;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import org.bukkit.Chunk;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 
 /**
  *

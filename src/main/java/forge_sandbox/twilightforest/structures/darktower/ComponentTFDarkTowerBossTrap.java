@@ -1,16 +1,17 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.block.BlockFace;
-import otd.util.RotationMirror.Rotation;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.RotationUtil;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import otd.lib.async.AsyncWorldEditor;
+import otd.util.RotationMirror.Rotation;
 
 public class ComponentTFDarkTowerBossTrap extends ComponentTFDarkTowerWing {
 

@@ -1,9 +1,10 @@
 package otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldgen;
 
+import java.util.Random;
+
 import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BetaBiome;
 import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BiomeOld;
 import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldnoisegen.NoiseGeneratorOctaves2D;
-import java.util.Random;
 
 public class WorldChunkManagerOld {
 	public double temperatures[];

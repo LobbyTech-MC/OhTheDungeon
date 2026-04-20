@@ -2,10 +2,10 @@ package forge_sandbox.greymerk.roguelike.dungeon.settings.base;
 
 import forge_sandbox.greymerk.roguelike.dungeon.base.DungeonFactory;
 import forge_sandbox.greymerk.roguelike.dungeon.base.DungeonRoom;
+import forge_sandbox.greymerk.roguelike.dungeon.settings.DungeonSettings;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.LevelSettings;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.SettingIdentifier;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.SettingsContainer;
-import forge_sandbox.greymerk.roguelike.dungeon.settings.DungeonSettings;
 
 public class SettingsRooms extends DungeonSettings {
 

@@ -16,11 +16,12 @@
  */
 package otd.dungeon.aetherlegacy;
 
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+
 import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rarity;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.Coords;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import otd.lib.async.later.aetherlegacy.Chest_Later;
 import otd.lib.async.later.aetherlegacy.Spawner_Later;
 

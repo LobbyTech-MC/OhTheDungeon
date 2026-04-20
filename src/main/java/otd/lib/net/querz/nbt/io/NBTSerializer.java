@@ -1,11 +1,11 @@
 package otd.lib.net.querz.nbt.io;
 
-import otd.lib.net.querz.io.Serializer;
-import otd.lib.net.querz.nbt.tag.Tag;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.GZIPOutputStream;
+
+import otd.lib.net.querz.io.Serializer;
+import otd.lib.net.querz.nbt.tag.Tag;
 
 public class NBTSerializer implements Serializer<NamedTag> {
 

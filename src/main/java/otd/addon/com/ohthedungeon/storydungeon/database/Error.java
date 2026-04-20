@@ -6,6 +6,7 @@
 package otd.addon.com.ohthedungeon.storydungeon.database;
 
 import java.util.logging.Level;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Error {

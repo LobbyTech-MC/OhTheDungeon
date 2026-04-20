@@ -1,13 +1,13 @@
 package otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome;
 
-//import com.github.barteks2x.b173gen.config.WorldConfig;
-import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldnoisegen.NoiseGeneratorOctaves3D;
+import java.util.Random;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 
-import java.util.Random;
+//import com.github.barteks2x.b173gen.config.WorldConfig;
+import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldnoisegen.NoiseGeneratorOctaves3D;
 
 public class BetaBiome {
 

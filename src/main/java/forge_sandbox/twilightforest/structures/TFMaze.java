@@ -5,12 +5,14 @@
  */
 package forge_sandbox.twilightforest.structures;
 
-import forge_sandbox.BlockPos;
-import forge_sandbox.StructureBoundingBox;
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+
+import forge_sandbox.BlockPos;
+import forge_sandbox.StructureBoundingBox;
 import otd.lib.async.AsyncWorldEditor;
 
 /**

@@ -2,14 +2,15 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.treasure.loot.PotionMixture;
-import forge_sandbox.greymerk.roguelike.treasure.loot.Shield;
-import forge_sandbox.greymerk.roguelike.treasure.loot.TippedArrow;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.init.Blocks;
 //import net.minecraft.init.Items;
 //import net.minecraft.item.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.PotionMixture;
+import forge_sandbox.greymerk.roguelike.treasure.loot.Shield;
+import forge_sandbox.greymerk.roguelike.treasure.loot.TippedArrow;
 
 public class ItemJunk extends ItemBase {
 

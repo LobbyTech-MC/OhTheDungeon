@@ -1,5 +1,9 @@
 package otd.lib.net.querz.nbt.io;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import otd.lib.net.querz.io.MaxDepthIO;
 import otd.lib.net.querz.nbt.tag.ArrayTag;
 import otd.lib.net.querz.nbt.tag.ByteArrayTag;
@@ -16,10 +20,6 @@ import otd.lib.net.querz.nbt.tag.LongTag;
 import otd.lib.net.querz.nbt.tag.ShortTag;
 import otd.lib.net.querz.nbt.tag.StringTag;
 import otd.lib.net.querz.nbt.tag.Tag;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
 
 public final class SNBTParser implements MaxDepthIO {
 

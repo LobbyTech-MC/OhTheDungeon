@@ -1,5 +1,10 @@
 package forge_sandbox.jaredbgreat.dldungeons.pieces.entrances;
 
+import org.bukkit.Material;
+import org.bukkit.World;
+//import net.minecraft.block.Block;
+//import net.minecraft.world.World;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -9,10 +14,6 @@ package forge_sandbox.jaredbgreat.dldungeons.pieces.entrances;
  * The base class for all that build entrances.
  */
 import forge_sandbox.jaredbgreat.dldungeons.planner.Dungeon;
-import org.bukkit.Material;
-import org.bukkit.World;
-//import net.minecraft.block.Block;
-//import net.minecraft.world.World;
 
 public abstract class AbstractEntrance {
 

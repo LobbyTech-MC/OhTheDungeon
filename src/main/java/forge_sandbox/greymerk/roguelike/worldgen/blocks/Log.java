@@ -1,7 +1,5 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Axis;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,6 +11,9 @@ import org.bukkit.block.data.Orientable;
 //import net.minecraft.block.BlockOldLog;
 //import net.minecraft.block.BlockPlanks;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class Log {
 

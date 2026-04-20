@@ -16,12 +16,10 @@
  */
 package otd.lib.async.later.aetherlegacy;
 
-import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rarity;
-import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -33,12 +31,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
+
+import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rarity;
+import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import otd.api.event.ChestEvent;
+import otd.config.SimpleWorldConfig;
+import otd.config.WorldConfig;
 import otd.lib.async.AsyncWorldEditor;
 import otd.lib.async.later.roguelike.Later;
 import otd.util.RandomCollection;
-import otd.config.SimpleWorldConfig;
-import otd.config.WorldConfig;
 import otd.world.DungeonType;
 
 /**

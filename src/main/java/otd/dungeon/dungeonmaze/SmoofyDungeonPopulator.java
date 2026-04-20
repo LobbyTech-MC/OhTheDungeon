@@ -23,12 +23,19 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
 
 import io.papermc.lib.PaperLib;
 import otd.Main;
@@ -48,305 +55,397 @@ import otd.util.RandomCollection;
 import otd.world.DungeonType;
 
 /**
- *
  * @author
+ * @modified FAWE 2.15.1
  */
 public class SmoofyDungeonPopulator {
-	private static final int MIN_LAYER = 1;
-	private static final int MAX_LAYER = 7;
-//    private static final int LAYER_COUNT = 7;
+    private static final int MIN_LAYER = 1;
+    private static final int MAX_LAYER = 7;
 
-	private static class DungeonChunk {
-		public boolean whole_chunk = false;
-		public ChunkBlockPopulator chunk = null;
-		public int chunkx, chunkz;
+    // FAWE BlockState 缓存
+    private static final Map<Material, BlockState> blockStateCache = new ConcurrentHashMap<>();
+    private static final Map<Material, BlockState> airBlockStateCache = new ConcurrentHashMap<>();
+    
+    private static BlockState getCachedBlockState(Material material) {
+        if (material == null) return null;
+        if (material == Material.AIR) {
+            return airBlockStateCache.computeIfAbsent(material, 
+                m -> BukkitAdapter.adapt(m.createBlockData()));
+        }
+        return blockStateCache.computeIfAbsent(material, 
+            m -> BukkitAdapter.adapt(m.createBlockData()));
+    }
 
-		public ChunkBlockPopulator[][] map;
+    private static class DungeonChunk {
+        public boolean whole_chunk = false;
+        public ChunkBlockPopulator chunk = null;
+        public int chunkx, chunkz;
 
-		public DungeonChunk(int layer) {
-			map = new ChunkBlockPopulator[layer][4];
-		}
+        public ChunkBlockPopulator[][] map;
 
-		public void addLayer(int layer, MazeLayerBlockPopulator p) {
-			if (layer >= map.length)
-				return;
-			map[layer][1] = null;
-			map[layer][2] = null;
-			map[layer][3] = null;
-			map[layer][0] = p;
-		}
+        public DungeonChunk(int layer) {
+            map = new ChunkBlockPopulator[layer][4];
+        }
 
-		public void addRoom(int layer, int pos, MazeRoomBlockPopulator p) {
-			if (layer >= map.length)
-				return;
-			if (pos >= 4)
-				return;
-			map[layer][pos] = p;
-		}
-	}
+        public void addLayer(int layer, MazeLayerBlockPopulator p) {
+            if (layer >= map.length) return;
+            map[layer][1] = null;
+            map[layer][2] = null;
+            map[layer][3] = null;
+            map[layer][0] = p;
+        }
 
-	public static class SmoofyDungeonInstance {
-		DungeonChunk chunks[][];
-		final int layerMin = MIN_LAYER;
-		final int layerMax = MAX_LAYER;
+        public void addRoom(int layer, int pos, MazeRoomBlockPopulator p) {
+            if (layer >= map.length) return;
+            if (pos >= 4) return;
+            map[layer][pos] = p;
+        }
+    }
 
-		public void placePiece(AsyncWorldEditor world, Random rand, int i, int j, Biome b) {
-			int ymin = 18 + ((layerMin - 1) * 6);
-			int ymax = 18 + ((layerMax - 1 + 1) * 6);
+    public static class SmoofyDungeonInstance {
+        DungeonChunk chunks[][];
+        final int layerMin = MIN_LAYER;
+        final int layerMax = MAX_LAYER;
 
-			int chunkx = chunks[i][j].chunkx, chunkz = chunks[i][j].chunkz;
-			for (int x = 0; x < 16; x++) {
-				for (int y = 0; y < 16; y++) {
-					for (int z = ymin; z < ymax; z++) {
-						if ((z - 18) % 6 == 0) {
-							world.setBlockType(chunkx * 16 + x, z, chunkz * 16 + y, Material.COBBLESTONE);
-						} else
-							world.setBlockType(chunkx * 16 + x, z, chunkz * 16 + y, Material.AIR);
-					}
-				}
-			}
+        public void placePiece(AsyncWorldEditor world, Random rand, int i, int j, Biome b) {
+            int ymin = 18 + ((layerMin - 1) * 6);
+            int ymax = 18 + ((layerMax - 1 + 1) * 6);
 
-			if (chunks[i][j].whole_chunk) {
-				ChunkBlockPopulatorArgs args = new ChunkBlockPopulatorArgs(world, rand, new HashSet<>(),
-						chunks[i][j].chunkx, chunks[i][j].chunkz);
-				chunks[i][j].chunk.populateChunk(args);
-				if (chunks[i][j].chunk instanceof OasisChunkPopulator) {
-					OasisChunkPopulator t = (OasisChunkPopulator) chunks[i][j].chunk;
-					int x = chunks[i][j].chunkx * 16 + 8;
-					int z = chunks[i][j].chunkz * 16 + 8;
-					t.apply_glass(ymax, world, x, z, b);
-				}
-				return;
-			}
-			world.setChunk(chunks[i][j].chunkx, chunks[i][j].chunkz);
-			for (int x = 0; x < 16; x++) {
-				for (int z = 0; z < 16; z++) {
-					world.setChunkType(x, ymax, z, Material.GLASS);
-				}
-			}
-			for (int l = layerMin - 1; l < layerMax; l++) {
-				// Calculate the Y coordinate based on the current layer
-				int y = 18 + ((l - 1) * 6);
-				if (chunks[i][j].map[l][1] == null && chunks[i][j].map[l][2] == null
-						&& chunks[i][j].map[l][3] == null) {
-					MazeLayerBlockPopulatorArgs newArgs = new MazeLayerBlockPopulatorArgs(world, rand,
-							chunks[i][j].chunkx, chunks[i][j].chunkz, new HashSet<>(), l, y);
-					MazeLayerBlockPopulator p = (MazeLayerBlockPopulator) chunks[i][j].map[l][0];
-					p.populateLayer(newArgs);
-				} else {
-					world.setChunk(chunks[i][j].chunkx, chunks[i][j].chunkz);
-					for (int chunkX = 0; chunkX < 2; chunkX++) {
-						for (int chunkZ = 0; chunkZ < 2; chunkZ++) {
-							// Calculate the global X and Y coordinates
-							int x = (chunks[i][j].chunkx * 16) + chunkX * 8;
-							int z = (chunks[i][j].chunkz * 16) + chunkZ * 8;
+            int chunkx = chunks[i][j].chunkx, chunkz = chunks[i][j].chunkz;
+            
+            // 使用 FAWE EditSession 批量设置
+            try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                    .world(BukkitAdapter.adapt(world.getWorld()))
+                    .allowedRegionsEverywhere()
+                    .limitUnlimited()
+                    .changeSetNull()
+                    .fastMode(true)
+                    .build()) {
+                
+                Map<BlockVector3, BlockState> blocksToSet = new HashMap<>();
+                
+                // 批量设置基础框架
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        for (int y = ymin; y < ymax; y++) {
+                            BlockVector3 pos = BlockVector3.at(chunkx * 16 + x, y, chunkz * 16 + z);
+                            if ((y - 18) % 6 == 0) {
+                                blocksToSet.put(pos, getCachedBlockState(Material.COBBLESTONE));
+                            } else {
+                                blocksToSet.put(pos, getCachedBlockState(Material.AIR));
+                            }
+                        }
+                    }
+                }
+                
+                // 提交基础框架
+                for (Map.Entry<BlockVector3, BlockState> entry : blocksToSet.entrySet()) {
+                    editSession.setBlock(entry.getKey(), entry.getValue());
+                }
+                editSession.flushQueue();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-							int index = chunkX * 2 + chunkZ;
-							MazeRoomBlockPopulator p = (MazeRoomBlockPopulator) chunks[i][j].map[l][index];
-							int floorOffset = p.getFloorOffset(chunkX * 8, y, chunkZ * 8, world);
-							int ceilingOffset = p.getCeilingOffset(chunkX * 8, y, chunkZ * 8, world);
+            if (chunks[i][j].whole_chunk) {
+                ChunkBlockPopulatorArgs args = new ChunkBlockPopulatorArgs(world, rand, new HashSet<>(),
+                        chunks[i][j].chunkx, chunks[i][j].chunkz);
+                chunks[i][j].chunk.populateChunk(args);
+                if (chunks[i][j].chunk instanceof OasisChunkPopulator) {
+                    OasisChunkPopulator t = (OasisChunkPopulator) chunks[i][j].chunk;
+                    int x = chunks[i][j].chunkx * 16 + 8;
+                    int z = chunks[i][j].chunkz * 16 + 8;
+                    t.apply_glass(ymax, world, x, z, b);
+                }
+                return;
+            }
+            
+            world.setChunk(chunks[i][j].chunkx, chunks[i][j].chunkz);
+            
+            // 使用 FAWE 设置玻璃顶层
+            try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                    .world(BukkitAdapter.adapt(world.getWorld()))
+                    .allowedRegionsEverywhere()
+                    .limitUnlimited()
+                    .changeSetNull()
+                    .fastMode(true)
+                    .build()) {
+                
+                Map<BlockVector3, BlockState> glassBlocks = new HashMap<>();
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        BlockVector3 pos = BlockVector3.at(chunkx * 16 + x, ymax, chunkz * 16 + z);
+                        glassBlocks.put(pos, getCachedBlockState(Material.GLASS));
+                    }
+                }
+                for (Map.Entry<BlockVector3, BlockState> entry : glassBlocks.entrySet()) {
+                    editSession.setBlock(entry.getKey(), entry.getValue());
+                }
+                editSession.flushQueue();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            // 处理各层迷宫
+            for (int l = layerMin - 1; l < layerMax; l++) {
+                int y = 18 + ((l - 1) * 6);
+                if (chunks[i][j].map[l][1] == null && chunks[i][j].map[l][2] == null
+                        && chunks[i][j].map[l][3] == null) {
+                    MazeLayerBlockPopulatorArgs newArgs = new MazeLayerBlockPopulatorArgs(world, rand,
+                            chunks[i][j].chunkx, chunks[i][j].chunkz, new HashSet<>(), l, y);
+                    MazeLayerBlockPopulator p = (MazeLayerBlockPopulator) chunks[i][j].map[l][0];
+                    p.populateLayer(newArgs);
+                } else {
+                    world.setChunk(chunks[i][j].chunkx, chunks[i][j].chunkz);
+                    for (int chunkX = 0; chunkX < 2; chunkX++) {
+                        for (int chunkZ = 0; chunkZ < 2; chunkZ++) {
+                            int x = (chunks[i][j].chunkx * 16) + chunkX * 8;
+                            int z = (chunks[i][j].chunkz * 16) + chunkZ * 8;
 
-							MazeRoomBlockPopulatorArgs newArgs = new MazeRoomBlockPopulatorArgs(world, rand,
-									chunks[i][j].chunkx, chunks[i][j].chunkz, new HashSet<>(), l, x, y, z, floorOffset,
-									ceilingOffset);
-							p.populateRoom(newArgs);
+                            int index = chunkX * 2 + chunkZ;
+                            MazeRoomBlockPopulator p = (MazeRoomBlockPopulator) chunks[i][j].map[l][index];
+                            int floorOffset = p.getFloorOffset(chunkX * 8, y, chunkZ * 8, world);
+                            int ceilingOffset = p.getCeilingOffset(chunkX * 8, y, chunkZ * 8, world);
 
-							if (!p.getConstRoom()) {
-								for (MazeRoomBlockPopulator pp : SmoofyDungeon.decoration)
-									pp.populateRoom(newArgs);
-							}
-						}
-					}
-				}
-			}
-			for (int m = ymin; m < ymax; m++) {
-				world.setChunkType(0, m, 7, Material.STONE_BRICKS);
-				world.setChunkType(0, m, 8, Material.STONE_BRICKS);
-				world.setChunkType(15, m, 7, Material.STONE_BRICKS);
-				world.setChunkType(15, m, 8, Material.STONE_BRICKS);
-				world.setChunkType(7, m, 0, Material.STONE_BRICKS);
-				world.setChunkType(8, m, 0, Material.STONE_BRICKS);
-				world.setChunkType(7, m, 15, Material.STONE_BRICKS);
-				world.setChunkType(8, m, 15, Material.STONE_BRICKS);
-			}
+                            MazeRoomBlockPopulatorArgs newArgs = new MazeRoomBlockPopulatorArgs(world, rand,
+                                    chunks[i][j].chunkx, chunks[i][j].chunkz, new HashSet<>(), l, x, y, z, floorOffset,
+                                    ceilingOffset);
+                            p.populateRoom(newArgs);
 
-		}
+                            if (!p.getConstRoom()) {
+                                for (MazeRoomBlockPopulator pp : SmoofyDungeon.decoration) {
+                                    pp.populateRoom(newArgs);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 设置角落支撑柱 - 使用 FAWE 批量设置
+            try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                    .world(BukkitAdapter.adapt(world.getWorld()))
+                    .allowedRegionsEverywhere()
+                    .limitUnlimited()
+                    .changeSetNull()
+                    .fastMode(true)
+                    .build()) {
+                
+                Map<BlockVector3, BlockState> pillarBlocks = new HashMap<>();
+                BlockState stoneBricksState = getCachedBlockState(Material.STONE_BRICKS);
+                
+                for (int m = ymin; m < ymax; m++) {
+                    // 四个角落的柱子
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 0, m, chunks[i][j].chunkz * 16 + 7), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 0, m, chunks[i][j].chunkz * 16 + 8), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 15, m, chunks[i][j].chunkz * 16 + 7), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 15, m, chunks[i][j].chunkz * 16 + 8), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 7, m, chunks[i][j].chunkz * 16 + 0), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 8, m, chunks[i][j].chunkz * 16 + 0), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 7, m, chunks[i][j].chunkz * 16 + 15), stoneBricksState);
+                    pillarBlocks.put(BlockVector3.at(chunks[i][j].chunkx * 16 + 8, m, chunks[i][j].chunkz * 16 + 15), stoneBricksState);
+                }
+                
+                for (Map.Entry<BlockVector3, BlockState> entry : pillarBlocks.entrySet()) {
+                    editSession.setBlock(entry.getKey(), entry.getValue());
+                }
+                editSession.flushQueue();
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-		public void placeDungeon(AsyncWorldEditor world, Random rand, int chunkx, int chunkz, int w, int h, float oasis,
-				float entry) {
+        public void placeDungeon(AsyncWorldEditor world, Random rand, int chunkx, int chunkz, int w, int h, float oasis,
+                float entry) {
 
-			chunks = new DungeonChunk[w][h];
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
-					chunks[i][j] = new DungeonChunk(MAX_LAYER);
-				}
-			}
+            chunks = new DungeonChunk[w][h];
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                    chunks[i][j] = new DungeonChunk(MAX_LAYER);
+                }
+            }
 
-			if (rand.nextFloat() < oasis) {
-				int sizew = w - 2;
-				int sizeh = h - 2;
-				if (sizew > 0 && sizeh > 0) {
-					int a = rand.nextInt(sizew) + 1;
-					int b = rand.nextInt(sizeh) + 1;
-					chunks[a][b].whole_chunk = true;
-					chunks[a][b].chunk = SmoofyDungeon.oasis;
-				}
-			}
+            if (rand.nextFloat() < oasis) {
+                int sizew = w - 2;
+                int sizeh = h - 2;
+                if (sizew > 0 && sizeh > 0) {
+                    int a = rand.nextInt(sizew) + 1;
+                    int b = rand.nextInt(sizeh) + 1;
+                    chunks[a][b].whole_chunk = true;
+                    chunks[a][b].chunk = SmoofyDungeon.oasis;
+                }
+            }
 
-			{
-				int count = rand.nextInt(2) + 1;
-				for (int i = 0; i < count; i++) {
-					int sizew = w - 2;
-					int sizeh = h - 2;
-					if (sizew > 0 && sizeh > 0) {
-						int a = rand.nextInt(sizew) + 1;
-						int b = rand.nextInt(sizeh) + 1;
-						MazeLayerBlockPopulator p = SmoofyDungeon.layer.next();
-						int max = p.getMaximumLayer();
-						int min = p.getMinimumLayer();
-						int layer = rand.nextInt(max - min) + min;
-						chunks[a][b].addLayer(layer, p);
-					}
-				}
-			}
+            {
+                int count = rand.nextInt(2) + 1;
+                for (int i = 0; i < count; i++) {
+                    int sizew = w - 2;
+                    int sizeh = h - 2;
+                    if (sizew > 0 && sizeh > 0) {
+                        int a = rand.nextInt(sizew) + 1;
+                        int b = rand.nextInt(sizeh) + 1;
+                        MazeLayerBlockPopulator p = SmoofyDungeon.layer.next();
+                        int max = p.getMaximumLayer();
+                        int min = p.getMinimumLayer();
+                        int layer = rand.nextInt(max - min) + min;
+                        chunks[a][b].addLayer(layer, p);
+                    }
+                }
+            }
 
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
-					if (chunks[i][j].whole_chunk)
-						continue;
-					for (int k = layerMin - 1; k < layerMax; k++) {
-						RandomCollection<MazeRoomBlockPopulator> r;
-						if (chunks[i][j].map[k][0] != null)
-							continue;
-						r = SmoofyDungeon.ROOMS.get(k + 1);
-						chunks[i][j].addRoom(k, 0, r.next());
-						if ((i + k) % 2 == 0 && (j + k) % 2 == 0) {
-							chunks[i][j].addRoom(k, 1, SmoofyDungeon.empty);
-							chunks[i][j].addRoom(k, 2, SmoofyDungeon.empty);
-							chunks[i][j].addRoom(k, 3, SmoofyDungeon.empty);
-						} else {
-							chunks[i][j].addRoom(k, 1, r.next());
-							chunks[i][j].addRoom(k, 2, r.next());
-							chunks[i][j].addRoom(k, 3, r.next());
-						}
-					}
-				}
-			}
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                    if (chunks[i][j].whole_chunk)
+                        continue;
+                    for (int k = layerMin - 1; k < layerMax; k++) {
+                        RandomCollection<MazeRoomBlockPopulator> r;
+                        if (chunks[i][j].map[k][0] != null)
+                            continue;
+                        r = SmoofyDungeon.ROOMS.get(k + 1);
+                        chunks[i][j].addRoom(k, 0, r.next());
+                        if ((i + k) % 2 == 0 && (j + k) % 2 == 0) {
+                            chunks[i][j].addRoom(k, 1, SmoofyDungeon.empty);
+                            chunks[i][j].addRoom(k, 2, SmoofyDungeon.empty);
+                            chunks[i][j].addRoom(k, 3, SmoofyDungeon.empty);
+                        } else {
+                            chunks[i][j].addRoom(k, 1, r.next());
+                            chunks[i][j].addRoom(k, 2, r.next());
+                            chunks[i][j].addRoom(k, 3, r.next());
+                        }
+                    }
+                }
+            }
 
-			int midx = w / 2;
-			int midz = h / 2;
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
-					chunks[i][j].chunkx = i - midx + chunkx;
-					chunks[i][j].chunkz = j - midz + chunkz;
-				}
-			}
+            int midx = w / 2;
+            int midz = h / 2;
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                    chunks[i][j].chunkx = i - midx + chunkx;
+                    chunks[i][j].chunkz = j - midz + chunkz;
+                }
+            }
 
-			if (rand.nextFloat() < entry) {
-				// add entry
-				int sizew = w;
-				int sizeh = h;
-				if (sizew > 0 && sizeh > 0) {
-					int a = rand.nextInt(sizew);
-					int b = rand.nextInt(sizeh);
-					int c = rand.nextInt(4);
-					ChunkSnapshot snapshot = world.getWorld().getChunkAt(chunks[a][b].chunkx, chunks[a][b].chunkz)
-							.getChunkSnapshot(true, false, false);
-//					Bukkit.getLogger().info(chunks[a][b].chunkx + " " + chunks[a][b].chunkz);
-					SmoofyDungeon.entry.setChunkSnapshot(snapshot);
-					chunks[a][b].addRoom(MAX_LAYER - 1, c, SmoofyDungeon.entry);
-				}
-			}
+            if (rand.nextFloat() < entry) {
+                int sizew = w;
+                int sizeh = h;
+                if (sizew > 0 && sizeh > 0) {
+                    int a = rand.nextInt(sizew);
+                    int b = rand.nextInt(sizeh);
+                    int c = rand.nextInt(4);
+                    ChunkSnapshot snapshot = world.getWorld().getChunkAt(chunks[a][b].chunkx, chunks[a][b].chunkz)
+                            .getChunkSnapshot(true, false, false);
+                    SmoofyDungeon.entry.setChunkSnapshot(snapshot);
+                    chunks[a][b].addRoom(MAX_LAYER - 1, c, SmoofyDungeon.entry);
+                }
+            }
 
-			Biome b = MultiVersion.getBiome(world.getWorld(), chunkx * 16 + 8, chunkz * 16 + 8);
+            Biome b = MultiVersion.getBiome(world.getWorld(), chunkx * 16 + 8, chunkz * 16 + 8);
 
-			Bukkit.getScheduler().runTaskAsynchronously(Main.instance, () -> {
-				for (int i = 0; i < w; i++)
-					for (int j = 0; j < h; j++)
-						placePiece(world, rand, i, j, b);
-				commitDungeon(world, chunks[w / 2][h / 2].chunkx * 16 + 8, chunks[w / 2][h / 2].chunkz * 16 + 8);
-			});
-		}
+            Bukkit.getScheduler().runTaskAsynchronously(Main.instance, () -> {
+                for (int i = 0; i < w; i++)
+                    for (int j = 0; j < h; j++)
+                        placePiece(world, rand, i, j, b);
+                commitDungeon(world, chunks[w / 2][h / 2].chunkx * 16 + 8, chunks[w / 2][h / 2].chunkz * 16 + 8);
+            });
+        }
 
-		private final static Map<UUID, Integer> POOL = new HashMap<>();
+        private final static Map<UUID, Integer> POOL = new HashMap<>();
 
-		private void commitDungeon(AsyncWorldEditor w, int x, int z) {
-			Set<int[]> chunks0 = w.getAsyncWorld().getCriticalChunks();
+        private void commitDungeon(AsyncWorldEditor w, int x, int z) {
+            Set<int[]> chunks0 = w.getAsyncWorld().getCriticalChunks();
 
-			int delay = 0;
+            int delay = 0;
 
-			int offsetY = w.getSeaLevel() - AsyncWorldEditor.DEFAULT_SEALEVEL;
+            int offsetY = w.getSeaLevel() - AsyncWorldEditor.DEFAULT_SEALEVEL;
 
-			UUID id;
-			do {
-				id = UUID.randomUUID();
-			} while (POOL.containsKey(id));
-			UUID uuid = id;
-			synchronized (POOL) {
-				POOL.put(uuid, chunks0.size());
-			}
+            UUID id;
+            do {
+                id = UUID.randomUUID();
+            } while (POOL.containsKey(id));
+            UUID uuid = id;
+            synchronized (POOL) {
+                POOL.put(uuid, chunks0.size());
+            }
 
-			for (int[] chunk : chunks0) {
-				int chunkX = chunk[0];
-				int chunkZ = chunk[1];
+            for (int[] chunk : chunks0) {
+                int chunkX = chunk[0];
+                int chunkZ = chunk[1];
 
-				List<ZoneWorld.CriticalNode> cn = w.getAsyncWorld().getCriticalBlock(chunkX, chunkZ);
-				List<Later> later = w.getAsyncWorld().getCriticalLater(chunkX, chunkZ);
+                List<ZoneWorld.CriticalNode> cn = w.getAsyncWorld().getCriticalBlock(chunkX, chunkZ);
+                List<Later> later = w.getAsyncWorld().getCriticalLater(chunkX, chunkZ);
 
-				delay++;
+                delay++;
 
-				Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
-					PaperLib.getChunkAtAsync(w.getWorld(), chunkX, chunkZ, true).thenAccept((Chunk c) -> {
-						for (ZoneWorld.CriticalNode node : cn) {
-							int[] pos = node.pos;
-							if (node.bd != null) {
-								if (node.bd.getMaterial() != Material.IRON_BARS)
-									c.getBlock(pos[0], pos[1] + offsetY, pos[2]).setBlockData(node.bd, false);
-								else
-									c.getBlock(pos[0], pos[1] + offsetY, pos[2]).setType(node.bd.getMaterial(), true);
-							} else {
-								if (node.material != Material.IRON_BARS)
-									c.getBlock(pos[0], pos[1] + offsetY, pos[2]).setType(node.material, false);
-								else
-									c.getBlock(pos[0], pos[1] + offsetY, pos[2]).setType(node.material, true);
-							}
-						}
-						if (later != null) {
-							for (Later l : later) {
-								l.setOffset(x, offsetY, z);
-								l.doSomethingInChunk(c);
-							}
-						}
+                Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
+                    PaperLib.getChunkAtAsync(w.getWorld(), chunkX, chunkZ, true).thenAccept((Chunk c) -> {
+                        // 使用 FAWE 批量处理临界方块
+                        try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                                .world(BukkitAdapter.adapt(w.getWorld()))
+                                .allowedRegionsEverywhere()
+                                .limitUnlimited()
+                                .changeSetNull()
+                                .fastMode(true)
+                                .build()) {
+                            
+                            Map<BlockVector3, BlockState> blocksToSet = new HashMap<>();
+                            
+                            for (ZoneWorld.CriticalNode node : cn) {
+                                int[] pos = node.pos;
+                                BlockVector3 blockPos = BlockVector3.at(pos[0], pos[1] + offsetY, pos[2]);
+                                if (node.bd != null) {
+                                    blocksToSet.put(blockPos, getCachedBlockState(node.bd.getMaterial()));
+                                } else if (node.material != null) {
+                                    blocksToSet.put(blockPos, getCachedBlockState(node.material));
+                                }
+                            }
+                            
+                            for (Map.Entry<BlockVector3, BlockState> entry : blocksToSet.entrySet()) {
+                                editSession.setBlock(entry.getKey(), entry.getValue());
+                            }
+                            editSession.flushQueue();
+                            
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        
+                        if (later != null) {
+                            for (Later l : later) {
+                                l.setOffset(x, offsetY, z);
+                                l.doSomethingInChunk(c);
+                            }
+                        }
 
-						boolean isFinish = false;
-						synchronized (POOL) {
-							if (POOL.containsKey(uuid)) {
-								int count = POOL.get(uuid);
-								count--;
-								POOL.put(uuid, count);
+                        boolean isFinish = false;
+                        synchronized (POOL) {
+                            if (POOL.containsKey(uuid)) {
+                                int count = POOL.get(uuid);
+                                count--;
+                                POOL.put(uuid, count);
 
-								if (count == 0) {
-									isFinish = true;
-									POOL.remove(uuid);
-								}
-							}
-						}
+                                if (count == 0) {
+                                    isFinish = true;
+                                    POOL.remove(uuid);
+                                }
+                            }
+                        }
 
-						if (isFinish) {
-							Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
-								int ix = (w.zone_world.getMaxX() + w.zone_world.getMinX()) / 2;
-								int iy = (w.zone_world.getMaxY() + w.zone_world.getMinY()) / 2 + offsetY;
-								int iz = (w.zone_world.getMaxZ() + w.zone_world.getMinZ()) / 2;
+                        if (isFinish) {
+                            Bukkit.getScheduler().runTaskLater(Main.instance, () -> {
+                                int ix = (w.zone_world.getMaxX() + w.zone_world.getMinX()) / 2;
+                                int iy = (w.zone_world.getMaxY() + w.zone_world.getMinY()) / 2 + offsetY;
+                                int iz = (w.zone_world.getMaxZ() + w.zone_world.getMinZ()) / 2;
 
-								DungeonGeneratedEvent event = new DungeonGeneratedEvent(w.getWorld(), chunks0,
-										DungeonType.DungeonMaze, ix, iy, iz);
-								Bukkit.getServer().getPluginManager().callEvent(event);
-							}, 1L);
-						}
-
-					});
-				}, delay);
-			}
-		}
-	}
+                                DungeonGeneratedEvent event = new DungeonGeneratedEvent(w.getWorld(), chunks0,
+                                        DungeonType.DungeonMaze, ix, iy, iz);
+                                Bukkit.getServer().getPluginManager().callEvent(event);
+                            }, 1L);
+                        }
+                    });
+                }, delay);
+            }
+        }
+    }
 }

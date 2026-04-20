@@ -1,12 +1,13 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Axis;
 import org.bukkit.Material;
 import org.bukkit.block.data.Orientable;
 //import net.minecraft.block.BlockQuartz;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum Quartz {
 

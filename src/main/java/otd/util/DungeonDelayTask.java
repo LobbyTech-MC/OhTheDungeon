@@ -16,11 +16,12 @@
  */
 package otd.util;
 
+import java.util.Random;
+
 import forge_sandbox.greymerk.roguelike.dungeon.IDungeon;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.ISettings;
 import forge_sandbox.greymerk.roguelike.dungeon.tasks.IDungeonTask;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import java.util.Random;
 
 /**
  *

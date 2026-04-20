@@ -1,6 +1,9 @@
 package forge_sandbox.greymerk.roguelike.dungeon.tasks;
 
+import java.util.List;
 import java.util.Random;
+
+import org.bukkit.inventory.ItemStack;
 
 import forge_sandbox.greymerk.roguelike.dungeon.IDungeon;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.ISettings;
@@ -8,8 +11,6 @@ import forge_sandbox.greymerk.roguelike.treasure.TreasureManager;
 import forge_sandbox.greymerk.roguelike.util.WeightedChoice;
 import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import java.util.List;
-import org.bukkit.inventory.ItemStack;
 import otd.config.RoguelikeLootNode;
 import otd.config.SimpleWorldConfig;
 import otd.config.WorldConfig;

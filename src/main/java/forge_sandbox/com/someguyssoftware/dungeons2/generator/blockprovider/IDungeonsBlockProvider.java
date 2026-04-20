@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
+
 import forge_sandbox.com.someguyssoftware.dungeons2.Dungeons2;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.Arrangement;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.DungeonGenerator;
@@ -23,9 +27,6 @@ import forge_sandbox.com.someguyssoftware.dungeons2.style.Theme;
 import forge_sandbox.com.someguyssoftware.dungeonsengine.config.ILevelConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
 
 /**
  * @author Mark Gottschling on Aug 27, 2016

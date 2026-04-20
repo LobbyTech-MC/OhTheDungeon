@@ -2,13 +2,14 @@ package forge_sandbox.greymerk.roguelike.monster.profiles;
 
 import java.util.Random;
 
+import org.bukkit.World;
+import org.bukkit.inventory.EquipmentSlot;
+
 import forge_sandbox.greymerk.roguelike.monster.IEntity;
 import forge_sandbox.greymerk.roguelike.monster.IMonsterProfile;
 import forge_sandbox.greymerk.roguelike.monster.MobType;
 import forge_sandbox.greymerk.roguelike.treasure.loot.Equipment;
 import forge_sandbox.greymerk.roguelike.treasure.loot.provider.ItemSpecialty;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.World;
 
 public class ProfileVindicator implements IMonsterProfile {
 

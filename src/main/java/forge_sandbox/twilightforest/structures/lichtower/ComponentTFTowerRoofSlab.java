@@ -1,13 +1,14 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.util.WoodType;
-import forge_sandbox.twilightforest.TFFeature;
-
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Slab;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
+import forge_sandbox.util.WoodType;
 import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFTowerRoofSlab extends ComponentTFTowerRoof {

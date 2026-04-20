@@ -2,14 +2,15 @@ package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
 import java.util.Random;
 
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.MultipleFacing;
+//import net.minecraft.block.BlockVine;
+
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import forge_sandbox.greymerk.roguelike.worldgen.shapes.RectSolid;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.MultipleFacing;
-//import net.minecraft.block.BlockVine;
 
 public class Vine {
 

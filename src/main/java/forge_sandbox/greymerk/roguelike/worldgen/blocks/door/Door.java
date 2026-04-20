@@ -1,16 +1,17 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks.door;
 
+import org.bukkit.Bukkit;
+import org.bukkit.block.data.Bisected;
+import org.bukkit.block.data.type.Door.Hinge;
+//import net.minecraft.block.BlockDoor;
+//import net.minecraft.block.state.IBlockState;
+
 import com.google.gson.JsonElement;
 
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
-import org.bukkit.Bukkit;
-import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.type.Door.Hinge;
-//import net.minecraft.block.BlockDoor;
-//import net.minecraft.block.state.IBlockState;
 
 public class Door implements IDoor {
 

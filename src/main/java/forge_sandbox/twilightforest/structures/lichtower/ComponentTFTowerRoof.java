@@ -1,13 +1,13 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-
 import java.util.List;
 import java.util.Random;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import otd.lib.async.AsyncWorldEditor;
 
 public abstract class ComponentTFTowerRoof extends StructureTFComponentOld {
 

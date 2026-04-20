@@ -5,10 +5,12 @@
 package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Plats;
 
 import java.util.Random;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
+
 import org.bukkit.util.noise.NoiseGenerator;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
+
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
 
 public class RiverGenerator extends WaterGenerator {
 	public static final double xRiverFactor = 40.0;

@@ -16,11 +16,10 @@
  */
 package otd.gui;
 
-import forge_sandbox.jaredbgreat.dldungeons.Difficulty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,10 +27,13 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import otd.util.I18n;
+
+import forge_sandbox.jaredbgreat.dldungeons.Difficulty;
+import net.md_5.bungee.api.ChatColor;
 import otd.config.LootNode;
 import otd.config.SimpleWorldConfig;
 import otd.config.WorldConfig;
+import otd.util.I18n;
 
 /**
  *

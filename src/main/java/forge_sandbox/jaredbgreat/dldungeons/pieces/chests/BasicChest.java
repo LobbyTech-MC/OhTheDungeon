@@ -1,5 +1,13 @@
 package forge_sandbox.jaredbgreat.dldungeons.pieces.chests;
 
+import java.util.Random;
+
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.ItemStack;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -8,12 +16,6 @@ package forge_sandbox.jaredbgreat.dldungeons.pieces.chests;
 //import forge_sandbox.jaredbgreat.dldungeons.ConfigHandler;
 //import jaredbgreat.dldungeons.api.DLDEvent;
 import forge_sandbox.jaredbgreat.dldungeons.builder.DBlock;
-import java.util.Random;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.inventory.ItemStack;
 
 //import net.minecraft.item.ItemStack;
 //import net.minecraft.tileentity.TileEntityChest;

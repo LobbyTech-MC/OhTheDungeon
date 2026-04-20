@@ -1,12 +1,13 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner.astar;
 
+import java.util.PriorityQueue;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
  */
 
 import forge_sandbox.jaredbgreat.dldungeons.pieces.Doorway;
-import java.util.PriorityQueue;
 
 /**
  * A priority queue for storing doors which should sort them in order of fitness

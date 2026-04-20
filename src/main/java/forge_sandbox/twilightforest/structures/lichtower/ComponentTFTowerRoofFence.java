@@ -1,11 +1,12 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFTowerRoofFence extends ComponentTFTowerRoof {

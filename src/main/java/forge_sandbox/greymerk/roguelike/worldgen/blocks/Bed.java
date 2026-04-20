@@ -1,12 +1,13 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
+import org.bukkit.Material;
+
 //import forge_sandbox.greymerk.roguelike.config.RogueConfig;
 import forge_sandbox.greymerk.roguelike.util.DyeColor;
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import org.bukkit.Material;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import otd.config.WorldConfig;
 //import net.minecraft.block.BlockBed;
 //import net.minecraft.init.Blocks;

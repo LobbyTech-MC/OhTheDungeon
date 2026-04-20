@@ -1,14 +1,15 @@
 package forge_sandbox.greymerk.roguelike.worldgen.redstone;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 import org.bukkit.block.data.type.Switch;
 //import net.minecraft.block.BlockLever;
 //import net.minecraft.block.BlockLever.EnumOrientation;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class Lever {
 

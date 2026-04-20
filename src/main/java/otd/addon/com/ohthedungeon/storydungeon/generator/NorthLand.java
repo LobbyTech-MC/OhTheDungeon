@@ -5,10 +5,12 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.generator;
 
-import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 import java.util.Random;
+
 import org.bukkit.Material;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
+
+import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 
 public class NorthLand extends BaseGenerator {
 	private static int currentHeight = 30;

@@ -17,7 +17,9 @@
 package otd.dungeon.aetherlegacy;
 
 import java.util.Random;
+
 import org.bukkit.Material;
+
 import otd.lib.async.AsyncWorldEditor;
 
 public abstract class AetherStructure {

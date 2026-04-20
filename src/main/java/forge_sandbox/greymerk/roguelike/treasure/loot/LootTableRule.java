@@ -3,6 +3,10 @@ package forge_sandbox.greymerk.roguelike.treasure.loot;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.loot.LootTable;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,9 +14,6 @@ import com.google.gson.JsonObject;
 import forge_sandbox.greymerk.roguelike.treasure.ITreasureChest;
 import forge_sandbox.greymerk.roguelike.treasure.Treasure;
 import forge_sandbox.greymerk.roguelike.treasure.TreasureManager;
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.loot.LootTable;
 
 public class LootTableRule {
 

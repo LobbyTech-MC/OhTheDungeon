@@ -1,11 +1,11 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
+import java.util.Random;
+
 import forge_sandbox.StructureBoundingBox;
 import forge_sandbox.twilightforest.TFFeature;
-
-import java.util.Random;
-import otd.lib.async.AsyncWorldEditor;
 import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFTowerBeardAttached extends ComponentTFTowerBeard {
 

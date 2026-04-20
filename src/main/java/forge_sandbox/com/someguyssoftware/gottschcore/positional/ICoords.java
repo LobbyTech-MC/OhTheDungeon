@@ -1,9 +1,10 @@
 package forge_sandbox.com.someguyssoftware.gottschcore.positional;
 
-import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
+import org.bukkit.block.BlockFace;
+
 import forge_sandbox.BlockPos;
 import forge_sandbox.ChunkPos;
-import org.bukkit.block.BlockFace;
+import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
 
 /**
  * This class is a wrapper for Minecraft positional classes and calculations.

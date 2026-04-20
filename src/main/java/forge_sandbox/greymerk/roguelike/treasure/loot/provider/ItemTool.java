@@ -2,13 +2,14 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import com.google.gson.JsonObject;
 
 import forge_sandbox.greymerk.roguelike.treasure.loot.Enchant;
 import forge_sandbox.greymerk.roguelike.treasure.loot.Equipment;
 import forge_sandbox.greymerk.roguelike.treasure.loot.Quality;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 public class ItemTool extends ItemBase {
 

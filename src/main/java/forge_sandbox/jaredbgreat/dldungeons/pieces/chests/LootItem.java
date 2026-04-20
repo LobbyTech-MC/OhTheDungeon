@@ -13,9 +13,11 @@ package forge_sandbox.jaredbgreat.dldungeons.pieces.chests;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import otd.util.Logging;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import otd.util.Logging;
 
 //import net.minecraft.block.Block;
 //import net.minecraft.item.Item;

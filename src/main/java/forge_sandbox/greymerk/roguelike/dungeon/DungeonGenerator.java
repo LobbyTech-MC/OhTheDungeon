@@ -3,6 +3,8 @@ package forge_sandbox.greymerk.roguelike.dungeon;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.scheduler.BukkitRunnable;
+
 import forge_sandbox.greymerk.roguelike.dungeon.settings.ISettings;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.LevelSettings;
 import forge_sandbox.greymerk.roguelike.dungeon.tasks.IDungeonTask;
@@ -10,7 +12,6 @@ import forge_sandbox.greymerk.roguelike.dungeon.tasks.IDungeonTaskRegistry;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import otd.Main;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class DungeonGenerator {
 

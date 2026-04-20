@@ -1,6 +1,9 @@
 package otd.lib.net.querz.mca;
 
-import static otd.lib.net.querz.mca.LoadFlags.*;
+import static otd.lib.net.querz.mca.LoadFlags.ALL_DATA;
+import static otd.lib.net.querz.mca.LoadFlags.BLOCK_LIGHTS;
+import static otd.lib.net.querz.mca.LoadFlags.BLOCK_STATES;
+import static otd.lib.net.querz.mca.LoadFlags.SKY_LIGHT;
 
 import java.util.ArrayList;
 import java.util.HashMap;

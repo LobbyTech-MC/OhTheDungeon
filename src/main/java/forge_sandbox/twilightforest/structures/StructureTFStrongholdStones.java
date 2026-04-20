@@ -6,6 +6,7 @@
 package forge_sandbox.twilightforest.structures;
 
 import java.util.Random;
+
 import org.bukkit.Material;
 
 public class StructureTFStrongholdStones extends StructureTFComponent.BlockSelector {

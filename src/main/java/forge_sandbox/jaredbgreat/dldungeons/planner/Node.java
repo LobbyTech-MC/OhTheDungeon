@@ -1,13 +1,13 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner;
 
+import java.util.Random;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
  */
 
 import forge_sandbox.jaredbgreat.dldungeons.rooms.Room;
-
-import java.util.Random;
 
 /**
  * A class representing node rooms (aka, hub-rooms) from and between which other

@@ -2,11 +2,12 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
+import org.bukkit.inventory.ItemStack;
+//import net.minecraft.item.ItemStack;
+
 import com.google.gson.JsonObject;
 
 import forge_sandbox.greymerk.roguelike.treasure.loot.PotionMixture;
-import org.bukkit.inventory.ItemStack;
-//import net.minecraft.item.ItemStack;
 
 public class ItemMixture extends ItemBase {
 

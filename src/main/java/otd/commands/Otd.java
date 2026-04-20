@@ -18,10 +18,12 @@ package otd.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+
 import otd.gui.MainMenu;
 
 public class Otd implements TabExecutor {

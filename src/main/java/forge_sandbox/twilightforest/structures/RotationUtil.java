@@ -5,13 +5,16 @@
  */
 package forge_sandbox.twilightforest.structures;
 
-import java.util.Random;
-import org.bukkit.block.BlockFace;
-import otd.util.RotationMirror.Rotation;
 import static otd.util.RotationMirror.Rotation.CLOCKWISE_180;
 import static otd.util.RotationMirror.Rotation.CLOCKWISE_90;
 import static otd.util.RotationMirror.Rotation.COUNTERCLOCKWISE_90;
 import static otd.util.RotationMirror.Rotation.NONE;
+
+import java.util.Random;
+
+import org.bukkit.block.BlockFace;
+
+import otd.util.RotationMirror.Rotation;
 
 public final class RotationUtil {
 	public static final Rotation[] ROTATIONS = Rotation.values();

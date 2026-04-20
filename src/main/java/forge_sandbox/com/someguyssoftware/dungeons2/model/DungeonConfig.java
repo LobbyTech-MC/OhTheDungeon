@@ -3,6 +3,7 @@
  */
 package forge_sandbox.com.someguyssoftware.dungeons2.model;
 
+import forge_sandbox.com.someguyssoftware.dungeons2.config.ModConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.Quantity;
 
 /**

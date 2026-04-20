@@ -6,11 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.Material;
+//import net.minecraft.init.Blocks;
+
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import org.bukkit.Material;
-//import net.minecraft.init.Blocks;
 
 public enum Treasure {
 

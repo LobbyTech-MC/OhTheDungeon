@@ -1,15 +1,16 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerWing;
-
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.block.BlockFace;
-import otd.lib.async.AsyncWorldEditor;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerWing;
+import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFDarkTowerBalcony extends ComponentTFTowerWing {
 

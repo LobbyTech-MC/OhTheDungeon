@@ -3,6 +3,9 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import com.google.gson.JsonObject;
 
 import forge_sandbox.greymerk.roguelike.treasure.loot.Enchant;
@@ -10,8 +13,6 @@ import forge_sandbox.greymerk.roguelike.treasure.loot.Loot;
 import forge_sandbox.greymerk.roguelike.util.IWeighted;
 import forge_sandbox.greymerk.roguelike.util.TextFormat;
 import forge_sandbox.greymerk.roguelike.util.WeightedChoice;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import otd.util.I18n;
 //import net.minecraft.init.Blocks;
 //import net.minecraft.init.Items;

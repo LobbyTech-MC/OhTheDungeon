@@ -1,5 +1,11 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner.astar;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -10,12 +16,6 @@ import forge_sandbox.jaredbgreat.dldungeons.planner.Dungeon;
 import forge_sandbox.jaredbgreat.dldungeons.planner.mapping.Tile;
 import forge_sandbox.jaredbgreat.dldungeons.rooms.Room;
 import forge_sandbox.jaredbgreat.dldungeons.themes.ThemeFlags;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
 
 /**
  * This class contains utility methods for testing the validity and viability of

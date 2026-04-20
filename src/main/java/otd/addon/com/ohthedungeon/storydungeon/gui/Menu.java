@@ -5,22 +5,11 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.gui;
 
-import otd.addon.com.ohthedungeon.storydungeon.PerPlayerDungeonInstance;
-import otd.addon.com.ohthedungeon.storydungeon.config.DungeonConfig;
-import otd.addon.com.ohthedungeon.storydungeon.database.AsyncUtil;
-import otd.addon.com.ohthedungeon.storydungeon.generator.BaseGenerator;
-import otd.addon.com.ohthedungeon.storydungeon.generator.FakeGenerator;
-import otd.addon.com.ohthedungeon.storydungeon.item.Book;
-import otd.addon.com.ohthedungeon.storydungeon.util.I18n;
-import otd.addon.com.ohthedungeon.storydungeon.util.ZoneUtils;
-import otd.addon.com.ohthedungeon.storydungeon.world.ZoneConfig;
-import otd.addon.com.ohthedungeon.storydungeon.world.ZoneDungeonType;
-import forge_sandbox.greymerk.roguelike.dungeon.settings.DungeonSettings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -32,6 +21,19 @@ import org.bukkit.generator.BlockPopulator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import forge_sandbox.greymerk.roguelike.dungeon.settings.DungeonSettings;
+import net.md_5.bungee.api.ChatColor;
+import otd.addon.com.ohthedungeon.storydungeon.PerPlayerDungeonInstance;
+import otd.addon.com.ohthedungeon.storydungeon.config.DungeonConfig;
+import otd.addon.com.ohthedungeon.storydungeon.database.AsyncUtil;
+import otd.addon.com.ohthedungeon.storydungeon.generator.BaseGenerator;
+import otd.addon.com.ohthedungeon.storydungeon.generator.FakeGenerator;
+import otd.addon.com.ohthedungeon.storydungeon.item.Book;
+import otd.addon.com.ohthedungeon.storydungeon.util.I18n;
+import otd.addon.com.ohthedungeon.storydungeon.util.ZoneUtils;
+import otd.addon.com.ohthedungeon.storydungeon.world.ZoneConfig;
+import otd.addon.com.ohthedungeon.storydungeon.world.ZoneDungeonType;
 
 public class Menu extends Content {
 	private final static int SLOT = 6 * 9;

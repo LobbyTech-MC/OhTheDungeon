@@ -2,18 +2,18 @@ package forge_sandbox.greymerk.roguelike.treasure.loot;
 
 import java.util.Random;
 
-import com.google.gson.JsonObject;
-
-import forge_sandbox.greymerk.roguelike.util.IWeighted;
-import forge_sandbox.greymerk.roguelike.util.WeightedChoice;
-
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import com.google.gson.JsonObject;
+
+import forge_sandbox.greymerk.roguelike.util.IWeighted;
+import forge_sandbox.greymerk.roguelike.util.WeightedChoice;
 
 public enum Potion {
 

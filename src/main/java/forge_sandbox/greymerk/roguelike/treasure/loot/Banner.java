@@ -2,13 +2,14 @@ package forge_sandbox.greymerk.roguelike.treasure.loot;
 
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.block.banner.Pattern;
-import org.bukkit.block.banner.PatternType;
 
 //import net.minecraft.init.Items;
 //import net.minecraft.item.EnumDyeColor;

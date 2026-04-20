@@ -5,12 +5,13 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.world;
 
-import otd.addon.com.ohthedungeon.storydungeon.generator.FakeGenerator;
 import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+
+import otd.addon.com.ohthedungeon.storydungeon.generator.FakeGenerator;
 import otd.lib.DungeonWorldManager;
 
 /**

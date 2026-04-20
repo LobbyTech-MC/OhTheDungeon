@@ -7,6 +7,7 @@ package forge_sandbox.twilightforest.treasure;
 
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 

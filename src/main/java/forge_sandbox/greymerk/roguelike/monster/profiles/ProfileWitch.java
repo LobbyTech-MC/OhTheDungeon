@@ -2,10 +2,11 @@ package forge_sandbox.greymerk.roguelike.monster.profiles;
 
 import java.util.Random;
 
+import org.bukkit.World;
+
 import forge_sandbox.greymerk.roguelike.monster.IEntity;
 import forge_sandbox.greymerk.roguelike.monster.IMonsterProfile;
 import forge_sandbox.greymerk.roguelike.monster.MobType;
-import org.bukkit.World;
 
 public class ProfileWitch implements IMonsterProfile {
 

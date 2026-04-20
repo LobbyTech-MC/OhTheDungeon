@@ -16,8 +16,8 @@
  */
 package otd.lib.async.later.customstruct;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -26,6 +26,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import otd.api.event.ChestEvent;
 import otd.config.LootNode;
 import otd.config.WorldConfig.CustomDungeon;

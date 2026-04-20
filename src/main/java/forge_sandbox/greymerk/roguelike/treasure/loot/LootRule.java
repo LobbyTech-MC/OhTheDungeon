@@ -2,11 +2,12 @@ package forge_sandbox.greymerk.roguelike.treasure.loot;
 
 import java.util.Random;
 
+import org.bukkit.inventory.ItemStack;
+//import net.minecraft.item.ItemStack;
+
 import forge_sandbox.greymerk.roguelike.treasure.Treasure;
 import forge_sandbox.greymerk.roguelike.treasure.TreasureManager;
 import forge_sandbox.greymerk.roguelike.util.IWeighted;
-import org.bukkit.inventory.ItemStack;
-//import net.minecraft.item.ItemStack;
 
 public class LootRule {
 

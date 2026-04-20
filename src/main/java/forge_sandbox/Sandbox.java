@@ -16,9 +16,6 @@
  */
 package forge_sandbox;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import forge_sandbox.greymerk.roguelike.treasure.loot.Loot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +28,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.Loot;
 import otd.Main;
 import otd.util.I18n;
 

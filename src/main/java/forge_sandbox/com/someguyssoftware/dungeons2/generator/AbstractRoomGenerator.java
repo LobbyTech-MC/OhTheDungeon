@@ -3,11 +3,11 @@
  */
 package forge_sandbox.com.someguyssoftware.dungeons2.generator;
 
-import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
-import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import forge_sandbox.BlockPos;
 import org.bukkit.Material;
 
+import forge_sandbox.BlockPos;
+import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
+import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
 import otd.lib.async.AsyncWorldEditor;
 
 /**

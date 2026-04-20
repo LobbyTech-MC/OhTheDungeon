@@ -5,11 +5,13 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.generator;
 
-import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
-import org.bukkit.util.noise.*;
-import org.bukkit.Material;
-
 import java.util.Random;
+
+import org.bukkit.Material;
+import org.bukkit.util.noise.PerlinOctaveGenerator;
+import org.bukkit.util.noise.SimplexOctaveGenerator;
+
+import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 
 public class Fjord extends BaseGenerator {
 	private long seed;

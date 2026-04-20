@@ -1,12 +1,22 @@
 package otd.lib.net.querz.mca;
 
-import otd.lib.net.querz.nbt.io.NBTDeserializer;
-import otd.lib.net.querz.nbt.io.NBTSerializer;
-import otd.lib.net.querz.nbt.io.NamedTag;
-import otd.lib.net.querz.nbt.tag.CompoundTag;
-import otd.lib.net.querz.nbt.tag.ListTag;
-
-import static otd.lib.net.querz.mca.LoadFlags.*;
+import static otd.lib.net.querz.mca.LoadFlags.ALL_DATA;
+import static otd.lib.net.querz.mca.LoadFlags.BIOMES;
+import static otd.lib.net.querz.mca.LoadFlags.BLOCK_LIGHTS;
+import static otd.lib.net.querz.mca.LoadFlags.BLOCK_STATES;
+import static otd.lib.net.querz.mca.LoadFlags.CARVING_MASKS;
+import static otd.lib.net.querz.mca.LoadFlags.ENTITIES;
+import static otd.lib.net.querz.mca.LoadFlags.HEIGHTMAPS;
+import static otd.lib.net.querz.mca.LoadFlags.LIGHTS;
+import static otd.lib.net.querz.mca.LoadFlags.LIQUIDS_TO_BE_TICKED;
+import static otd.lib.net.querz.mca.LoadFlags.LIQUID_TICKS;
+import static otd.lib.net.querz.mca.LoadFlags.POST_PROCESSING;
+import static otd.lib.net.querz.mca.LoadFlags.RAW;
+import static otd.lib.net.querz.mca.LoadFlags.SKY_LIGHT;
+import static otd.lib.net.querz.mca.LoadFlags.STRUCTURES;
+import static otd.lib.net.querz.mca.LoadFlags.TILE_ENTITIES;
+import static otd.lib.net.querz.mca.LoadFlags.TILE_TICKS;
+import static otd.lib.net.querz.mca.LoadFlags.TO_BE_TICKED;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -18,6 +28,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
+
+import otd.lib.net.querz.nbt.io.NBTDeserializer;
+import otd.lib.net.querz.nbt.io.NBTSerializer;
+import otd.lib.net.querz.nbt.io.NamedTag;
+import otd.lib.net.querz.nbt.tag.CompoundTag;
+import otd.lib.net.querz.nbt.tag.ListTag;
 
 public class Chunk implements Iterable<Section> {
 

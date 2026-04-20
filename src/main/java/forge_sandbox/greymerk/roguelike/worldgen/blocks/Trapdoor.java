@@ -1,7 +1,5 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
@@ -9,6 +7,9 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.TrapDoor;
 //import net.minecraft.block.BlockTrapDoor;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum Trapdoor {
 

@@ -5,11 +5,6 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.listener;
 
-import otd.addon.com.ohthedungeon.storydungeon.PerPlayerDungeonInstance;
-import otd.addon.com.ohthedungeon.storydungeon.database.AsyncUtil;
-import otd.addon.com.ohthedungeon.storydungeon.item.Book;
-import otd.addon.com.ohthedungeon.storydungeon.util.I18n;
-import otd.addon.com.ohthedungeon.storydungeon.world.ZoneConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,7 +17,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import otd.Main;
+import otd.addon.com.ohthedungeon.storydungeon.PerPlayerDungeonInstance;
+import otd.addon.com.ohthedungeon.storydungeon.database.AsyncUtil;
+import otd.addon.com.ohthedungeon.storydungeon.item.Book;
+import otd.addon.com.ohthedungeon.storydungeon.util.I18n;
+import otd.addon.com.ohthedungeon.storydungeon.world.ZoneConfig;
 
 /**
  *

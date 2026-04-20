@@ -1,5 +1,8 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner.astar;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -7,8 +10,6 @@ package forge_sandbox.jaredbgreat.dldungeons.planner.astar;
 
 import forge_sandbox.jaredbgreat.dldungeons.planner.Dungeon;
 import forge_sandbox.jaredbgreat.dldungeons.rooms.Room;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 
 public class RoomBFS {
 	private ArrayDeque<Room> roomQueue = new ArrayDeque<Room>();

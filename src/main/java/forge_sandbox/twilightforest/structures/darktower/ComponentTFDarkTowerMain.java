@@ -1,13 +1,9 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-import forge_sandbox.twilightforest.structures.StructureTFDecorator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import org.bukkit.Axis;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,12 +12,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.Orientable;
-import otd.util.RotationMirror.Rotation;
-import otd.lib.async.AsyncWorldEditor;
-import forge_sandbox.twilightforest.TFTreasure;
-import forge_sandbox.twilightforest.structures.RotationUtil;
-import forge_sandbox.twilightforest.structures.StructureTFComponent;
-import forge_sandbox.twilightforest.structures.TFMaze;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Furnace;
@@ -30,6 +20,17 @@ import org.bukkit.block.data.type.Piston;
 import org.bukkit.block.data.type.Slab;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.EntityType;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
+import forge_sandbox.twilightforest.TFTreasure;
+import forge_sandbox.twilightforest.structures.RotationUtil;
+import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import forge_sandbox.twilightforest.structures.StructureTFDecorator;
+import forge_sandbox.twilightforest.structures.TFMaze;
+import otd.lib.async.AsyncWorldEditor;
+import otd.util.RotationMirror.Rotation;
 
 public class ComponentTFDarkTowerMain extends ComponentTFDarkTowerWing {
 	private boolean placedKeys = false;

@@ -1,8 +1,9 @@
 package forge_sandbox.com.someguyssoftware.dungeons2.rotate;
 
+import org.bukkit.block.data.BlockData;
+
 import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
 import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rotate;
-import org.bukkit.block.data.BlockData;
 
 /**
  * This does NOT depend on PlansApi. It is a stand-alone interface for

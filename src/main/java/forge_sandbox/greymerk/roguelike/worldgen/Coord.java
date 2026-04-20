@@ -1,7 +1,8 @@
 package forge_sandbox.greymerk.roguelike.worldgen;
 
-import forge_sandbox.BlockPos;
 import java.util.Objects;
+
+import forge_sandbox.BlockPos;
 
 public class Coord {
 

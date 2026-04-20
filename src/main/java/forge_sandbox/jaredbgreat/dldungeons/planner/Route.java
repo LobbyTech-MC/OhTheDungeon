@@ -1,14 +1,14 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
  */
 
 import forge_sandbox.jaredbgreat.dldungeons.rooms.Room;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * This class represents a potential route between two rooms; its purpose is to

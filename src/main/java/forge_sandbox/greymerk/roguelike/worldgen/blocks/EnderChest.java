@@ -2,16 +2,17 @@ package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
 import java.util.Arrays;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 //import net.minecraft.block.BlockEnderChest;
 //import net.minecraft.init.Blocks;
 //import net.minecraft.util.EnumFacing;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class EnderChest {
 	public static void set(IWorldEditor editor, Cardinal dir, Coord pos) {

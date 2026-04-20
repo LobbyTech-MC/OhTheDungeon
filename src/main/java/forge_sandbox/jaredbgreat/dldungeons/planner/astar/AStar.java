@@ -1,5 +1,7 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner.astar;
 
+import java.util.PriorityQueue;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -9,8 +11,6 @@ import forge_sandbox.jaredbgreat.dldungeons.pieces.Doorway;
 import forge_sandbox.jaredbgreat.dldungeons.planner.Dungeon;
 import forge_sandbox.jaredbgreat.dldungeons.planner.mapping.Tile;
 import forge_sandbox.jaredbgreat.dldungeons.rooms.Room;
-
-import java.util.PriorityQueue;
 
 public class AStar {
 

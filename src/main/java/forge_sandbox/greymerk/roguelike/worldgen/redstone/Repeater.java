@@ -2,13 +2,14 @@ package forge_sandbox.greymerk.roguelike.worldgen.redstone;
 
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 //import net.minecraft.block.BlockRedstoneRepeater;
 //import net.minecraft.init.Blocks;
 import org.bukkit.Material;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class Repeater {
 

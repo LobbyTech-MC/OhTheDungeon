@@ -1,9 +1,9 @@
 package forge_sandbox.greymerk.roguelike.util.mst;
 
+import java.util.Random;
+
 import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-
-import java.util.Random;
 
 public class MSTPoint {
 

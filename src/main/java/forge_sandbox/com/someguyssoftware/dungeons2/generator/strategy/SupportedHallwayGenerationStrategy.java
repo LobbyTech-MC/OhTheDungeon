@@ -8,8 +8,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 
 import com.google.common.collect.Multimap;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.world.block.BlockState;
+
+import forge_sandbox.AxisAlignedBB;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.AbstractRoomGenerationStrategy;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.Arrangement;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.ISupportedBlock;
@@ -25,431 +37,303 @@ import forge_sandbox.com.someguyssoftware.dungeons2.style.Theme;
 import forge_sandbox.com.someguyssoftware.dungeonsengine.config.ILevelConfig;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.Coords;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
-import forge_sandbox.AxisAlignedBB;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.data.BlockData;
 import otd.lib.async.AsyncWorldEditor;
 
 /**
  * @author Mark Gottschling on Sep 9, 2016
- *
+ * @modified FAWE 2.15.1
  */
 public class SupportedHallwayGenerationStrategy extends AbstractRoomGenerationStrategy {
-	/*
-	 * a list of all the rooms in the level
-	 */
-	private List<Room> rooms;
+    
+    /*
+     * a list of all the rooms in the level
+     */
+    private List<Room> rooms;
+    
+    /*
+     * a list of generated hallways
+     */
+    private List<Hallway> hallways;
+    
+    // 缓存常用的 BlockState
+    private final Map<Material, BlockState> blockStateCache = new ConcurrentHashMap<>();
+    
+    /**
+     * 
+     * @param blockProvider
+     * @param rooms
+     * @param hallways
+     */
+    public SupportedHallwayGenerationStrategy(IDungeonsBlockProvider blockProvider, List<Room> rooms,
+            List<Hallway> hallways) {
+        super(blockProvider);
+        setRooms(rooms);
+        setHallways(hallways);
+    }
 
-	/*
-	 * a list of generated hallways
-	 */
-	private List<Hallway> hallways;
+    @Override
+    public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
+            ILevelConfig config) {
+        Hallway hallway = (Hallway) room;
+        Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
+        Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
 
-	/**
-	 * 
-	 * @param blockProvider
-	 * @param rooms
-	 * @param hallways
-	 */
-	public SupportedHallwayGenerationStrategy(IDungeonsBlockProvider blockProvider, List<Room> rooms,
-			List<Hallway> hallways) {
-		super(blockProvider);
-		// setBlockProvider(blockProvider);
-		setRooms(rooms);
-		setHallways(hallways);
-	}
+        SupportedBlockProcessor supportProcessor = new SupportedBlockProcessor(getBlockProvider(), room);
+        ISupportedBlock supportedBlock;
 
-	@Override
-	public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
-			ILevelConfig config) {
-		Hallway hallway = (Hallway) room;
-		BlockData blockState;
-		Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
-		Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
+        // 收集相交房间
+        List<Room> intersectRooms = getIntersectingRooms(hallway);
+        
+        // 预计算边界框
+        List<AxisAlignedBB> doorBBs = getDoorBoundingBoxes(hallway);
+        List<AxisAlignedBB> hallwayBBs = getHallwayBoundingBoxes();
 
-		SupportedBlockProcessor supportProcessor = new SupportedBlockProcessor(getBlockProvider(), room);
-		ISupportedBlock supportedBlock;
+        // 使用 FAWE EditSession
+        try (EditSession editSession = WorldEdit.getInstance().newEditSessionBuilder()
+                .world(BukkitAdapter.adapt(world.getWorld()))
+                .allowedRegionsEverywhere()
+                .limitUnlimited()
+                .changeSetNull()
+                .fastMode(true)
+                .build()) {
+            
+            // 存储需要设置的方块
+            Map<BlockVector3, BlockState> blocksToSet = new HashMap<>();
+            
+            // 第一遍：正向遍历
+            for (int y = 0; y < room.getHeight(); y++) {
+                for (int z = 0; z < room.getDepth(); z++) {
+                    for (int x = 0; x < room.getWidth(); x++) {
 
-		// collect a list of rooms that the hallway intersects against
-		List<Room> intersectRooms = new ArrayList<>();
-		for (Room otherRoom : getRooms()) {
-			if (hallway.getBoundingBox().intersects(otherRoom.getBoundingBox())) {
-				intersectRooms.add(otherRoom);
-			}
-		}
+                        ICoords indexCoords = new Coords(x, y, z);
+                        ICoords worldCoords = room.getCoords().add(indexCoords);
 
-		// generate the room
-		for (int y = 0; y < room.getHeight(); y++) {
-			// first pass
-			for (int z = 0; z < room.getDepth(); z++) {
-				for (int x = 0; x < room.getWidth(); x++) {
+                        Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
 
-					// create index coords
-					ICoords indexCoords = new Coords(x, y, z);
-					// get the world coords
-					ICoords worldCoords = room.getCoords().add(indexCoords);
+                        if (isPostProcessed(arrangement, worldCoords, postProcessMap)) {
+                            continue;
+                        }
 
-					// get the design arrangement of the block @ xyz
-					Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
+                        BlockData blockData = getBlockProvider().getBlockState(random, worldCoords, room,
+                                arrangement, theme, styleSheet, config);
 
-					// if element is of a type that requires post-processing, save for processing
-					// after the rest of the room is generated
-					if (isPostProcessed(arrangement, worldCoords, postProcessMap))
-						continue;
+                        // 处理空气和支持计算
+                        if (blockData == null || arrangement.getElement() == DesignElement.AIR
+                                || blockData.getMaterial() == Material.AIR
+                                || blockData == IDungeonsBlockProvider.NULL_BLOCK) {
+                            supportedBlock = new SupportedBlock(blockData, 100);
+                            if (blockData != null && blockData.getMaterial() == Material.AIR) {
+                                BlockVector3 pos = BlockVector3.at(
+                                    worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                                );
+                                blocksToSet.put(pos, getCachedBlockState(blockData));
+                                if (worldCoords.getY() == room.getMinY() + 1) {
+                                    blueprint.put(arrangement.getElement(), worldCoords);
+                                }
+                            }
+                        } else {
+                            boolean buildBlock = isBlockBuildable(worldCoords, doorBBs, intersectRooms, hallwayBBs);
+                            
+                            if (buildBlock && blockData != IDungeonsBlockProvider.NULL_BLOCK) {
+                                int amount = supportProcessor.applySupportRulesPass1(world, indexCoords, worldCoords,
+                                        arrangement.getElement());
+                                if (amount >= 100) {
+                                    supportedBlock = new SupportedBlock(blockData, 100);
+                                    BlockVector3 pos = BlockVector3.at(
+                                        worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                                    );
+                                    blocksToSet.put(pos, getCachedBlockState(blockData));
+                                } else {
+                                    supportedBlock = new SupportedBlock(blockData, amount);
+                                }
+                            } else {
+                                supportedBlock = new SupportedBlock(IDungeonsBlockProvider.NULL_BLOCK, 100);
+                            }
+                        }
+                        supportProcessor.getSupportMatrix()[y][z][x] = supportedBlock;
+                    }
+                }
 
-					// get the block state
-					blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-							styleSheet, config);
+                // 第二遍：反向遍历
+                for (int z = room.getDepth() - 1; z >= 0; z--) {
+                    for (int x = room.getWidth() - 1; x >= 0; x--) {
+                        supportedBlock = supportProcessor.getSupportMatrix()[y][z][x];
+                        if (supportedBlock == null || supportedBlock.getAmount() < 100) {
 
-					// update support calculations for air
-					if (blockState == null || arrangement.getElement() == DesignElement.AIR
-							|| blockState.getMaterial() == Material.AIR
-							|| blockState == IDungeonsBlockProvider.NULL_BLOCK) {
-						// create a supported block instance
-						supportedBlock = new SupportedBlock(blockState, 100); // 100 = the block as been processed and
-																				// is in the world
-						// update the world with the blockState
-						if (blockState != null && blockState.getMaterial() == Material.AIR) {
-//                            Dungeons2.log.debug("Updating hallway with AIR @ " + worldCoords.toShortString());
-							// update the world
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-							// add the design element to the blueprint (if floor level)
-							if (worldCoords.getY() == room.getMinY() + 1)
-								blueprint.put(arrangement.getElement(), worldCoords);
-						}
-					} else {
-						// NOTE we already know at this point that the design element is not AIR
-						boolean buildBlock = isBlockBuildable(worldCoords, hallway, intersectRooms);
-//Dungeons2.log.debug(String.format("Supported buildBlock %s: %b", blockState.getBlock().getRegistryName(), buildBlock));
-						// update the world with the blockState
-						if (buildBlock && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-							// apply the pass 1 support
-							// perform support rules and set the supportedBlock array
-							int amount = supportProcessor.applySupportRulesPass1(world, indexCoords, worldCoords,
-									arrangement.getElement());
-//                            Dungeons2.log.debug("Pass 1 Support amount:" + amount);
-							if (amount >= 100) {
-								supportedBlock = new SupportedBlock(blockState, 100);
-								world.setBlockState(worldCoords.toPos(), blockState, 3);
-							} else {
-								supportedBlock = new SupportedBlock(blockState, amount);
-							}
-						} else {
-							// create a supported block instance of null block
-							supportedBlock = new SupportedBlock(IDungeonsBlockProvider.NULL_BLOCK, 100); // 100 = the
-																											// block as
-																											// been
-																											// processed
-																											// and is in
-																											// the world
-//                            Dungeons2.log.debug("Adding NULL BLOCK @" + worldCoords.toShortString());
-						}
-					}
-					// update the supported block matrix
-					supportProcessor.getSupportMatrix()[y][z][x] = supportedBlock;
-				}
-			}
+                            ICoords indexCoords = new Coords(x, y, z);
+                            ICoords worldCoords = room.getCoords().add(indexCoords);
 
-			// second pass
-			for (int z = room.getDepth() - 1; z >= 0; z--) {
-				for (int x = room.getWidth() - 1; x >= 0; x--) {
-					// check matrix if this entry is less than 100, ie still need checks to
-					// determine if to place
-					supportedBlock = supportProcessor.getSupportMatrix()[y][z][x];
-					if (supportedBlock == null || supportedBlock.getAmount() < 100) {
+                            Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room,
+                                    room.getLayout());
 
-						// create index coords
-						ICoords indexCoords = new Coords(x, y, z);
-						// get the world coords
-						ICoords worldCoords = room.getCoords().add(indexCoords);
+                            BlockData blockData;
+                            if (arrangement.getElement() != DesignElement.AIR) {
+                                blockData = getBlockProvider().getBlockState(random, worldCoords, room,
+                                        arrangement, theme, styleSheet, config);
+                            } else {
+                                blockData = Bukkit.createBlockData(Material.AIR);
+                            }
 
-						// get the element arrangement
-						Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room,
-								room.getLayout());
+                            if (blockData == null || blockData.getMaterial() == Material.AIR) {
+                                BlockVector3 pos = BlockVector3.at(
+                                    worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                                );
+                                blocksToSet.put(pos, getCachedBlockState(blockData));
+                            } else {
+                                supportedBlock = new SupportedBlock(blockData, 0);
+                                boolean buildBlock = isBlockBuildable(worldCoords, doorBBs, intersectRooms, hallwayBBs);
 
-						if (arrangement.getElement() != DesignElement.AIR) {
-							// get the block state
-							blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-									styleSheet, config);
-						} else {
-							blockState = Bukkit.createBlockData(Material.AIR);
-						}
+                                if (buildBlock && blockData != IDungeonsBlockProvider.NULL_BLOCK) {
+                                    int amount = supportProcessor.applySupportRulesPass2(world, indexCoords, worldCoords,
+                                            arrangement.getElement());
+                                    supportedBlock.setAmount(supportedBlock.getAmount() + amount);
 
-						// if the block is air, update the world
-						if (blockState.getMaterial() == Material.AIR) {
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-						}
-						// else calculate the support
-						else {
-							// create a supported block with 0 support
-							supportedBlock = new SupportedBlock(blockState, 0);
-							// determine if the block should be built
-							boolean buildBlock = isBlockBuildable(worldCoords, hallway, intersectRooms);
+                                    if (supportedBlock.getAmount() >= 100) {
+                                        BlockVector3 pos = BlockVector3.at(
+                                            worldCoords.getX(), worldCoords.getY(), worldCoords.getZ()
+                                        );
+                                        blocksToSet.put(pos, getCachedBlockState(blockData));
+                                        if (worldCoords.getY() == room.getMinY() + 1) {
+                                            blueprint.put(arrangement.getElement(), worldCoords);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 批量设置所有方块
+            for (Map.Entry<BlockVector3, BlockState> entry : blocksToSet.entrySet()) {
+                editSession.setBlock(entry.getKey(), entry.getValue());
+            }
+            
+            editSession.flushQueue();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        // 生成后处理方块
+        postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
+    }
 
-							if (buildBlock && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-								// perform support rules to determine amount of support
-								int amount = supportProcessor.applySupportRulesPass2(world, indexCoords, worldCoords,
-										arrangement.getElement());
-//                                Dungeons2.log.debug("Pass 2 Support amount:" + amount);
-								// update supportBlock's amount of support
-								supportedBlock.setAmount(supportedBlock.getAmount() + amount);
+    /**
+     * 获取相交的房间列表
+     */
+    private List<Room> getIntersectingRooms(Hallway hallway) {
+        List<Room> intersectRooms = new ArrayList<>();
+        for (Room otherRoom : getRooms()) {
+            if (hallway.getBoundingBox().intersects(otherRoom.getBoundingBox())) {
+                intersectRooms.add(otherRoom);
+            }
+        }
+        return intersectRooms;
+    }
+    
+    /**
+     * 获取门连接的房间边界框
+     */
+    private List<AxisAlignedBB> getDoorBoundingBoxes(Hallway hallway) {
+        List<AxisAlignedBB> doorBBs = new ArrayList<>();
+        for (int i = 0; i < hallway.getDoors().size() && i < 2; i++) {
+            if (hallway.getDoors().get(i) != null && hallway.getDoors().get(i).getRoom() != null) {
+                doorBBs.add(hallway.getDoors().get(i).getRoom().getBoundingBox());
+            }
+        }
+        return doorBBs;
+    }
+    
+    /**
+     * 获取所有走廊的边界框
+     */
+    private List<AxisAlignedBB> getHallwayBoundingBoxes() {
+        List<AxisAlignedBB> hallwayBBs = new ArrayList<>();
+        for (Room r : getHallways()) {
+            hallwayBBs.add(r.getBoundingBox());
+        }
+        return hallwayBBs;
+    }
+    
+    /**
+     * 检查方块是否可构建
+     */
+    public boolean isBlockBuildable(ICoords worldCoords, List<AxisAlignedBB> doorBBs,
+                                    List<Room> intersectRooms, List<AxisAlignedBB> hallwayBBs) {
+        AxisAlignedBB box = new AxisAlignedBB(worldCoords.toPos());
+        
+        // 检查门连接的房间
+        for (AxisAlignedBB doorBB : doorBBs) {
+            if (box.intersects(doorBB)) {
+                return false;
+            }
+        }
+        
+        // 检查相交的房间
+        for (Room r : intersectRooms) {
+            if (box.intersects(r.getBoundingBox())) {
+                return false;
+            }
+        }
+        
+        // 检查其他走廊
+        for (AxisAlignedBB hallwayBB : hallwayBBs) {
+            if (box.intersects(hallwayBB)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * 获取缓存的 BlockState
+     */
+    protected BlockState getCachedBlockState(BlockData blockData) {
+        if (blockData == null) {
+            return null;
+        }
+        Material material = blockData.getMaterial();
+        return blockStateCache.computeIfAbsent(material, 
+            m -> BukkitAdapter.adapt(blockData));
+    }
+    
+    /**
+     * @deprecated 使用新的 ILevelConfig 版本
+     */
+    @Deprecated
+    @Override
+    public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
+            LevelConfig config) {
+        generate(world, random, room, theme, styleSheet, (ILevelConfig) config);
+    }
 
-								// if amount is now greated than threshold, update the world
-								if (supportedBlock.getAmount() >= 100) {
-									world.setBlockState(worldCoords.toPos(), blockState, 3);
-									if (worldCoords.getY() == room.getMinY() + 1)
-										blueprint.put(arrangement.getElement(), worldCoords);
-								}
-							}
-						}
-					}
-				}
-			}
+    /**
+     * @return the rooms
+     */
+    public List<Room> getRooms() {
+        return rooms;
+    }
 
-			// generate the post processing blocks
-			postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
-			// TODO should we override postProcess for Supported that is a Supported
-			// VERSION?
-		}
-	}
+    /**
+     * @param rooms the rooms to set
+     */
+    public final void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
 
-	/**
-	 * 
-	 */
-	@Deprecated
-	@Override
-	public void generate(AsyncWorldEditor world, Random random, Room room, Theme theme, StyleSheet styleSheet,
-			LevelConfig config) {
-		Hallway hallway = (Hallway) room;
-		BlockData blockState;
-		Map<ICoords, Arrangement> postProcessMap = new HashMap<>();
-		Multimap<DesignElement, ICoords> blueprint = room.getFloorMap();
+    /**
+     * @return the hallways
+     */
+    public List<Hallway> getHallways() {
+        return hallways;
+    }
 
-		SupportedBlockProcessor supportProcessor = new SupportedBlockProcessor(getBlockProvider(), room);
-		ISupportedBlock supportedBlock;
-
-		// collect a list of rooms that the hallway intersects against
-		List<Room> intersectRooms = new ArrayList<>();
-		for (Room otherRoom : getRooms()) {
-			if (hallway.getBoundingBox().intersects(otherRoom.getBoundingBox())) {
-				intersectRooms.add(otherRoom);
-			}
-		}
-
-		// generate the room
-		for (int y = 0; y < room.getHeight(); y++) {
-			// first pass
-			for (int z = 0; z < room.getDepth(); z++) {
-				for (int x = 0; x < room.getWidth(); x++) {
-
-					// create index coords
-					ICoords indexCoords = new Coords(x, y, z);
-					// get the world coords
-					ICoords worldCoords = room.getCoords().add(indexCoords);
-
-					// get the design arrangement of the block @ xyz
-					Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room, room.getLayout());
-
-					// if element is of a type that requires post-processing, save for processing
-					// after the rest of the room is generated
-					if (isPostProcessed(arrangement, worldCoords, postProcessMap))
-						continue;
-
-					// get the block state
-					blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-							styleSheet, config);
-
-					// update support calculations for air
-					if (blockState == null || arrangement.getElement() == DesignElement.AIR
-							|| blockState.getMaterial() == Material.AIR
-							|| blockState == IDungeonsBlockProvider.NULL_BLOCK) {
-						// create a supported block instance
-						supportedBlock = new SupportedBlock(blockState, 100); // 100 = the block as been processed and
-																				// is in the world
-						// update the world with the blockState
-						if (blockState != null && blockState.getMaterial() == Material.AIR) {
-//                            Dungeons2.log.debug("Updating hallway with AIR @ " + worldCoords.toShortString());
-							// update the world
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-							// add the design element to the blueprint (if floor level)
-							if (worldCoords.getY() == room.getMinY() + 1)
-								blueprint.put(arrangement.getElement(), worldCoords);
-						}
-					} else {
-						// NOTE we already know at this point that the design element is not AIR
-						boolean buildBlock = isBlockBuildable(worldCoords, hallway, intersectRooms);
-//Dungeons2.log.debug(String.format("Supported buildBlock %s: %b", blockState.getBlock().getRegistryName(), buildBlock));
-						// update the world with the blockState
-						if (buildBlock && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-							// apply the pass 1 support
-							// perform support rules and set the supportedBlock array
-							int amount = supportProcessor.applySupportRulesPass1(world, indexCoords, worldCoords,
-									arrangement.getElement());
-//                            Dungeons2.log.debug("Pass 1 Support amount:" + amount);
-							if (amount >= 100) {
-								supportedBlock = new SupportedBlock(blockState, 100);
-								world.setBlockState(worldCoords.toPos(), blockState, 3);
-							} else {
-								supportedBlock = new SupportedBlock(blockState, amount);
-							}
-						} else {
-							// create a supported block instance of null block
-							supportedBlock = new SupportedBlock(IDungeonsBlockProvider.NULL_BLOCK, 100); // 100 = the
-																											// block as
-																											// been
-																											// processed
-																											// and is in
-																											// the world
-//                            Dungeons2.log.debug("Adding NULL BLOCK @" + worldCoords.toShortString());
-						}
-					}
-					// update the supported block matrix
-					supportProcessor.getSupportMatrix()[y][z][x] = supportedBlock;
-				}
-			}
-
-			// second pass
-			for (int z = room.getDepth() - 1; z >= 0; z--) {
-				for (int x = room.getWidth() - 1; x >= 0; x--) {
-					// check matrix if this entry is less than 100, ie still need checks to
-					// determine if to place
-					supportedBlock = supportProcessor.getSupportMatrix()[y][z][x];
-					if (supportedBlock == null || supportedBlock.getAmount() < 100) {
-
-						// create index coords
-						ICoords indexCoords = new Coords(x, y, z);
-						// get the world coords
-						ICoords worldCoords = room.getCoords().add(indexCoords);
-
-						// get the element arrangement
-						Arrangement arrangement = getBlockProvider().getArrangement(worldCoords, room,
-								room.getLayout());
-
-						if (arrangement.getElement() != DesignElement.AIR) {
-							// get the block state
-							blockState = getBlockProvider().getBlockState(random, worldCoords, room, arrangement, theme,
-									styleSheet, config);
-						} else {
-							blockState = Bukkit.createBlockData(Material.AIR);
-						}
-
-						// if the block is air, update the world
-						if (blockState == null || blockState.getMaterial() == Material.AIR) {
-							world.setBlockState(worldCoords.toPos(), blockState, 3);
-						}
-						// else calculate the support
-						else {
-							// create a supported block with 0 support
-							supportedBlock = new SupportedBlock(blockState, 0);
-							// determine if the block should be built
-							boolean buildBlock = isBlockBuildable(worldCoords, hallway, intersectRooms);
-
-							if (buildBlock && blockState != IDungeonsBlockProvider.NULL_BLOCK) {
-								// perform support rules to determine amount of support
-								int amount = supportProcessor.applySupportRulesPass2(world, indexCoords, worldCoords,
-										arrangement.getElement());
-//                                Dungeons2.log.debug("Pass 2 Support amount:" + amount);
-								// update supportBlock's amount of support
-								supportedBlock.setAmount(supportedBlock.getAmount() + amount);
-
-								// if amount is now greated than threshold, update the world
-								if (supportedBlock.getAmount() >= 100) {
-									world.setBlockState(worldCoords.toPos(), blockState, 3);
-									if (worldCoords.getY() == room.getMinY() + 1)
-										blueprint.put(arrangement.getElement(), worldCoords);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// generate the post processing blocks
-			postProcess(world, random, postProcessMap, room.getLayout(), theme, styleSheet, config);
-
-			// TODO should we override postProcess for Supported that is a Supported
-			// VERSION?
-		}
-	}
-
-	/**
-	 * 
-	 * @param worldCoords
-	 * @param hallway
-	 * @param intersectRooms
-	 * @return
-	 */
-	public boolean isBlockBuildable(ICoords worldCoords, Hallway hallway, List<Room> intersectRooms) {
-		// NOTE we already know at this point that the design element is not AIR
-		AxisAlignedBB box = new AxisAlignedBB(worldCoords.toPos());
-		boolean buildBlock = true;
-
-		// get the bounding boxes of the rooms the doors are connected to
-		// NOTE may have to change to list in the future if more than 2 doors per hall
-		AxisAlignedBB bb1 = hallway.getDoors().size() > 0 && hallway.getDoors().get(0) != null
-				? hallway.getDoors().get(0).getRoom().getBoundingBox()
-				: null;
-		AxisAlignedBB bb2 = hallway.getDoors().size() > 1 && hallway.getDoors().get(1) != null
-				? hallway.getDoors().get(1).getRoom().getBoundingBox()
-				: null;
-
-		// first check the wayline rooms
-		if ((bb1 != null && box.intersects(bb1)) || (bb2 != null && box.intersects(bb2))) {
-			buildBlock = false;
-		}
-
-		// second, check against any rooms in the level that the hallway intersects with
-		if (buildBlock) {
-			for (Room r : intersectRooms) {
-				AxisAlignedBB bb = r.getBoundingBox();
-				if (box.intersects(bb)) {
-					buildBlock = false;
-					break;
-				}
-			}
-		}
-
-		// lastly, check against all other hallways
-		if (buildBlock) {
-			for (Room r : getHallways()) {
-				AxisAlignedBB bb = r.getBoundingBox();
-				if (box.intersects(bb)) {
-//                    Dungeons2.log.debug(String.format("Supported Hallway @ %s intersects with hallway @ %s", box, bb));
-					buildBlock = false;
-					break;
-				}
-			}
-		}
-
-		return buildBlock;
-	}
-
-	/**
-	 * @return the rooms
-	 */
-	public List<Room> getRooms() {
-		return rooms;
-	}
-
-	/**
-	 * @param rooms the rooms to set
-	 */
-	public final void setRooms(List<Room> rooms) {
-		this.rooms = rooms;
-	}
-
-	/**
-	 * @return the hallways
-	 */
-	public List<Hallway> getHallways() {
-		return hallways;
-	}
-
-	/**
-	 * @param hallways the hallways to set
-	 */
-	public final void setHallways(List<Hallway> hallways) {
-		this.hallways = hallways;
-	}
+    /**
+     * @param hallways the hallways to set
+     */
+    public final void setHallways(List<Hallway> hallways) {
+        this.hallways = hallways;
+    }
 }

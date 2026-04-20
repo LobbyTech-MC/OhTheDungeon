@@ -4,12 +4,14 @@
 
 package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Plats;
 
-import java.util.Random;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
 import java.util.HashSet;
-import org.bukkit.util.noise.SimplexNoiseGenerator;
+import java.util.Random;
+
 import org.bukkit.Material;
+import org.bukkit.util.noise.SimplexNoiseGenerator;
+
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Generator;
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Support.ByteChunk;
 
 public class RoadGenerator extends PlatGenerator {
 	public static final int sidewalkWidth = 3;

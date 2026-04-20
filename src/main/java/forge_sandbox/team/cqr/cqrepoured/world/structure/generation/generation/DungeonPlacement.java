@@ -2,8 +2,8 @@ package forge_sandbox.team.cqr.cqrepoured.world.structure.generation.generation;
 
 import forge_sandbox.BlockPos;
 import forge_sandbox.BlockPos.MutableBlockPos;
-import forge_sandbox.team.cqr.cqrepoured.world.structure.generation.inhabitants.DungeonInhabitant;
 import forge_sandbox.Vec3d;
+import forge_sandbox.team.cqr.cqrepoured.world.structure.generation.inhabitants.DungeonInhabitant;
 
 public class DungeonPlacement {
 

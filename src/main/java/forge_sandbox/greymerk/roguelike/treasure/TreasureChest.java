@@ -1,12 +1,9 @@
 package forge_sandbox.greymerk.roguelike.treasure;
 
-import java.util.Random;
-
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 //import org.bukkit.block.Block;
@@ -18,6 +15,10 @@ import org.bukkit.inventory.ItemStack;
 //import net.minecraft.tileentity.TileEntityChest;
 //import net.minecraft.util.ResourceLocation;
 import org.bukkit.loot.LootTable;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import otd.lib.ZoneWorld;
 import otd.lib.async.later.roguelike.Chest_Generate_Later;
 //import shadow_lib.async.later.Chest_SetRandomSlot_Later;

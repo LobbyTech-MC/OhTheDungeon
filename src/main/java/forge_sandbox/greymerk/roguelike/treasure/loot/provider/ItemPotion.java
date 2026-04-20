@@ -2,10 +2,11 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.treasure.loot.Potion;
-import forge_sandbox.greymerk.roguelike.treasure.loot.PotionForm;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.item.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.Potion;
+import forge_sandbox.greymerk.roguelike.treasure.loot.PotionForm;
 
 public class ItemPotion extends ItemBase {
 

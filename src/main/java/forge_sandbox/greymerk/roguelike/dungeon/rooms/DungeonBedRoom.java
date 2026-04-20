@@ -2,6 +2,11 @@ package forge_sandbox.greymerk.roguelike.dungeon.rooms;
 
 import java.util.Random;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+//import net.minecraft.init.Items;
+//import net.minecraft.item.ItemStack;
+
 import forge_sandbox.greymerk.roguelike.dungeon.Dungeon;
 import forge_sandbox.greymerk.roguelike.dungeon.base.DungeonBase;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.LevelSettings;
@@ -20,10 +25,6 @@ import forge_sandbox.greymerk.roguelike.worldgen.blocks.Furnace;
 import forge_sandbox.greymerk.roguelike.worldgen.redstone.Torch;
 import forge_sandbox.greymerk.roguelike.worldgen.shapes.RectHollow;
 import forge_sandbox.greymerk.roguelike.worldgen.shapes.RectSolid;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-//import net.minecraft.init.Items;
-//import net.minecraft.item.ItemStack;
 
 public class DungeonBedRoom extends DungeonBase {
 

@@ -16,8 +16,9 @@
  */
 package otd.lib;
 
-import forge_sandbox.greymerk.roguelike.worldgen.IPositionInfo;
 import org.bukkit.block.Biome;
+
+import forge_sandbox.greymerk.roguelike.worldgen.IPositionInfo;
 
 /**
  *

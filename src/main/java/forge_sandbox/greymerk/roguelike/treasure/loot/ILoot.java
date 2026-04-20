@@ -1,8 +1,9 @@
 package forge_sandbox.greymerk.roguelike.treasure.loot;
 
-import forge_sandbox.greymerk.roguelike.util.IWeighted;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.item.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.util.IWeighted;
 
 public interface ILoot {
 

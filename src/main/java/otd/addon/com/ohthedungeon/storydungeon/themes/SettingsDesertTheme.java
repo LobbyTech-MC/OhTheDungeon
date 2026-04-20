@@ -3,6 +3,8 @@ package otd.addon.com.ohthedungeon.storydungeon.themes;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
+
 import forge_sandbox.greymerk.roguelike.dungeon.LevelGenerator;
 import forge_sandbox.greymerk.roguelike.dungeon.base.DungeonFactory;
 import forge_sandbox.greymerk.roguelike.dungeon.base.DungeonRoom;
@@ -20,7 +22,6 @@ import forge_sandbox.greymerk.roguelike.dungeon.towers.Tower;
 import forge_sandbox.greymerk.roguelike.theme.Theme;
 import forge_sandbox.greymerk.roguelike.treasure.loot.LootRuleManager;
 import forge_sandbox.greymerk.roguelike.treasure.loot.WeightedRandomLoot;
-import org.bukkit.Material;
 import otd.lib.BiomeDictionary;
 //import net.minecraft.init.Items;
 //import net.minecraftforge.common.BiomeDictionary;

@@ -1,11 +1,12 @@
 package forge_sandbox.twilightforest.structures.minotaurmaze;
 
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-
 import java.util.Random;
+
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFMazeDeadEndFountainLava extends ComponentTFMazeDeadEndFountain {

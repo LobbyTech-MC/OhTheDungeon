@@ -1,16 +1,12 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
-import forge_sandbox.BlockPos;
-import forge_sandbox.StructureBoundingBox;
-import forge_sandbox.twilightforest.TFFeature;
-import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
-import forge_sandbox.twilightforest.structures.StructureTFHelper;
-
-import javax.annotation.Nullable;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -19,12 +15,18 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Ladder;
 import org.bukkit.block.data.type.Stairs;
 import org.bukkit.entity.EntityType;
-import otd.util.RotationMirror.Rotation;
-import otd.lib.async.AsyncWorldEditor;
-import otd.lib.async.later.twilightforest.Art_Later;
+
+import forge_sandbox.BlockPos;
+import forge_sandbox.StructureBoundingBox;
+import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.TFTreasure;
 import forge_sandbox.twilightforest.structures.RotationUtil;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
+import forge_sandbox.twilightforest.structures.StructureTFHelper;
+import otd.lib.async.AsyncWorldEditor;
+import otd.lib.async.later.twilightforest.Art_Later;
+import otd.util.RotationMirror.Rotation;
 
 public class ComponentTFTowerWing extends StructureTFComponentOld {
 

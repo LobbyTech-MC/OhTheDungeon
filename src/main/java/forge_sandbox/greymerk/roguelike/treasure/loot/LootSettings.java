@@ -4,13 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.inventory.ItemStack;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import forge_sandbox.greymerk.roguelike.util.IWeighted;
 import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
-import org.bukkit.inventory.ItemStack;
 
 public class LootSettings {
 

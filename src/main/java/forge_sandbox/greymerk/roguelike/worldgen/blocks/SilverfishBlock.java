@@ -1,11 +1,12 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.BlockJumble;
-import forge_sandbox.greymerk.roguelike.worldgen.IBlockFactory;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import org.bukkit.Material;
 //import net.minecraft.block.BlockSilverfish;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.BlockJumble;
+import forge_sandbox.greymerk.roguelike.worldgen.IBlockFactory;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum SilverfishBlock {
 

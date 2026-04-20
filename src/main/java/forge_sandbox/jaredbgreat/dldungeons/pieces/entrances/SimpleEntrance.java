@@ -1,5 +1,12 @@
 package forge_sandbox.jaredbgreat.dldungeons.pieces.entrances;
 
+import static forge_sandbox.jaredbgreat.dldungeons.Constant.ladder2;
+import static forge_sandbox.jaredbgreat.dldungeons.Constant.ladder3;
+import static forge_sandbox.jaredbgreat.dldungeons.Constant.ladder4;
+import static forge_sandbox.jaredbgreat.dldungeons.Constant.ladder5;
+
+import org.bukkit.World;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -7,8 +14,6 @@ package forge_sandbox.jaredbgreat.dldungeons.pieces.entrances;
 
 import forge_sandbox.jaredbgreat.dldungeons.builder.DBlock;
 import forge_sandbox.jaredbgreat.dldungeons.planner.Dungeon;
-import org.bukkit.World;
-import static forge_sandbox.jaredbgreat.dldungeons.Constant.*;
 
 public class SimpleEntrance extends AbstractEntrance {
 

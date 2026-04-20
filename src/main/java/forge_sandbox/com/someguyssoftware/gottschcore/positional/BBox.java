@@ -3,8 +3,9 @@
  */
 package forge_sandbox.com.someguyssoftware.gottschcore.positional;
 
-import forge_sandbox.AxisAlignedBB;
 import javax.annotation.concurrent.Immutable;
+
+import forge_sandbox.AxisAlignedBB;
 
 /**
  * Wrapper for AxisAlignedBB

@@ -4,8 +4,9 @@
 
 package otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Neighbors;
 
-import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Plats.CityGenerator;
 import org.bukkit.Material;
+
+import otd.addon.com.ohthedungeon.storydungeon.generator.me.daddychurchill.Conurbation.Plats.CityGenerator;
 
 public class CityNeighbors {
 	private int[][] neighboringFloors;

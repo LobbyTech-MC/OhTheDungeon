@@ -1,5 +1,11 @@
 package otd.lib.net.querz.nbt.io;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Array;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import otd.lib.net.querz.io.MaxDepthIO;
 import otd.lib.net.querz.nbt.tag.ByteArrayTag;
 import otd.lib.net.querz.nbt.tag.ByteTag;
@@ -15,12 +21,6 @@ import otd.lib.net.querz.nbt.tag.LongTag;
 import otd.lib.net.querz.nbt.tag.ShortTag;
 import otd.lib.net.querz.nbt.tag.StringTag;
 import otd.lib.net.querz.nbt.tag.Tag;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Array;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * SNBTWriter creates an SNBT String.

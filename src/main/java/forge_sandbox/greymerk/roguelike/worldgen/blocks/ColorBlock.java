@@ -1,16 +1,17 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
 import java.util.Random;
-
-import forge_sandbox.greymerk.roguelike.util.DyeColor;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 //import net.minecraft.block.Block;
 //import net.minecraft.block.BlockColored;
 //import net.minecraft.init.Blocks;
 //import net.minecraft.item.EnumDyeColor;
+
+import forge_sandbox.greymerk.roguelike.util.DyeColor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum ColorBlock {
 

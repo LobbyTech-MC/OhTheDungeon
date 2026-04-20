@@ -1,12 +1,13 @@
 package forge_sandbox.twilightforest.structures.darktower;
 
+import java.util.Random;
+
+import org.bukkit.Material;
+
+import forge_sandbox.StructureBoundingBox;
 import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureTFComponentOld;
 import forge_sandbox.twilightforest.structures.lichtower.ComponentTFTowerWing;
-import forge_sandbox.StructureBoundingBox;
-
-import java.util.Random;
-import org.bukkit.Material;
 import otd.lib.async.AsyncWorldEditor;
 
 public class ComponentTFDarkTowerBeard extends StructureTFComponentOld {

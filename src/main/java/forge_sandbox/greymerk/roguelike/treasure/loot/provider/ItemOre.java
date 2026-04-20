@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.treasure.loot.WeightedRandomLoot;
-import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.init.Items;
 //import net.minecraft.item.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.WeightedRandomLoot;
+import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
 
 public class ItemOre extends ItemBase {
 

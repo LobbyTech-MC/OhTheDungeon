@@ -5,12 +5,13 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.generator;
 
-import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
-import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldnoisegen.NoiseGeneratorOctaves3D;
-import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldgen.WorldChunkManagerOld;
+import java.util.Random;
+
 import org.bukkit.Material;
 
-import java.util.Random;
+import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
+import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldgen.WorldChunkManagerOld;
+import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldnoisegen.NoiseGeneratorOctaves3D;
 
 public class Vanilla extends BaseGenerator {
 	private Random rand;

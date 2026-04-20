@@ -2,11 +2,12 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
+import org.bukkit.inventory.ItemStack;
+//import net.minecraft.item.ItemStack;
+
 import forge_sandbox.greymerk.roguelike.treasure.loot.WeightedRandomLoot;
 import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
 import forge_sandbox.greymerk.roguelike.worldgen.blocks.BlockType;
-import org.bukkit.inventory.ItemStack;
-//import net.minecraft.item.ItemStack;
 
 public class ItemBlock extends ItemBase {
 

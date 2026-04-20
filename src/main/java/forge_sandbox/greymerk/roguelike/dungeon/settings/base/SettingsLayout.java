@@ -1,10 +1,10 @@
 package forge_sandbox.greymerk.roguelike.dungeon.settings.base;
 
+import forge_sandbox.greymerk.roguelike.dungeon.LevelGenerator;
+import forge_sandbox.greymerk.roguelike.dungeon.settings.DungeonSettings;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.LevelSettings;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.SettingIdentifier;
 import forge_sandbox.greymerk.roguelike.dungeon.settings.SettingsContainer;
-import forge_sandbox.greymerk.roguelike.dungeon.LevelGenerator;
-import forge_sandbox.greymerk.roguelike.dungeon.settings.DungeonSettings;
 
 public class SettingsLayout extends DungeonSettings {
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.Registry;
 import org.bukkit.entity.Player;
@@ -28,8 +29,9 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import otd.util.I18n;
+
 import otd.config.WorldConfig;
+import otd.util.I18n;
 
 /**
  *

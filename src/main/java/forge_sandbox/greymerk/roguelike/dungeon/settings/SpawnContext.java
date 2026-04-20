@@ -2,8 +2,9 @@ package forge_sandbox.greymerk.roguelike.dungeon.settings;
 
 import java.util.List;
 
-import forge_sandbox.greymerk.roguelike.worldgen.IPositionInfo;
 import org.bukkit.block.Biome;
+
+import forge_sandbox.greymerk.roguelike.worldgen.IPositionInfo;
 import otd.lib.BiomeDictionary;
 //import net.minecraft.util.ResourceLocation;
 //import net.minecraft.world.biome.Biome;

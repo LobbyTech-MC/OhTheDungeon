@@ -1,5 +1,11 @@
 package forge_sandbox.jaredbgreat.dldungeons.planner;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
+import org.bukkit.World;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -7,10 +13,6 @@ package forge_sandbox.jaredbgreat.dldungeons.planner;
 
 import forge_sandbox.jaredbgreat.dldungeons.Difficulty;
 import forge_sandbox.jaredbgreat.dldungeons.pieces.Spawner;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-import org.bukkit.World;
 import otd.config.SimpleWorldConfig;
 import otd.config.WorldConfig;
 //import forge_sandbox.jaredbgreat.dldungeons.ConfigHandler;

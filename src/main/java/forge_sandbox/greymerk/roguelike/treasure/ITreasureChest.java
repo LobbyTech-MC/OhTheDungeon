@@ -2,10 +2,11 @@ package forge_sandbox.greymerk.roguelike.treasure;
 
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootTable;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 
 public interface ITreasureChest {
 	public Coord getPos();

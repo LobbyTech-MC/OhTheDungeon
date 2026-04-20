@@ -16,7 +16,6 @@
  */
 package otd.gui;
 
-import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,9 +36,13 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.google.gson.Gson;
+
+import net.md_5.bungee.api.ChatColor;
 import otd.Main;
-import otd.util.GZIPUtils;
 import otd.config.WorldConfig;
+import otd.util.GZIPUtils;
 import otd.util.I18n;
 
 /**

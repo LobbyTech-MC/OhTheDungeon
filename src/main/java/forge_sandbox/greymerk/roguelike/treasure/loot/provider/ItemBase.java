@@ -1,9 +1,10 @@
 package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
-import forge_sandbox.greymerk.roguelike.util.IWeighted;
-
 import java.util.Random;
+
 import org.bukkit.inventory.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.util.IWeighted;
 
 //import net.minecraft.item.ItemStack;
 

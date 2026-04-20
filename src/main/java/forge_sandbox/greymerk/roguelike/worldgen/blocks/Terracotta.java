@@ -1,12 +1,13 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.util.DyeColor;
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 //import net.minecraft.block.BlockGlazedTerracotta;
 //import net.minecraft.init.Blocks;
 import org.bukkit.Material;
 import org.bukkit.block.data.Directional;
+
+import forge_sandbox.greymerk.roguelike.util.DyeColor;
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public class Terracotta {
 

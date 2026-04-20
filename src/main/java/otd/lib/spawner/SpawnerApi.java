@@ -16,10 +16,11 @@
  */
 package otd.lib.spawner;
 
+import java.util.Random;
+
 import forge_sandbox.greymerk.roguelike.worldgen.Coord;
 import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import forge_sandbox.greymerk.roguelike.worldgen.spawners.Spawnable;
-import java.util.Random;
 
 /**
  *

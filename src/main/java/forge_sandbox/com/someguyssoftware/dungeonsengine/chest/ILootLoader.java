@@ -2,10 +2,11 @@ package forge_sandbox.com.someguyssoftware.dungeonsengine.chest;
 
 import java.util.Random;
 
-import forge_sandbox.com.someguyssoftware.dungeonsengine.config.IChestConfig;
-import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.InventoryHolder;
+
+import forge_sandbox.com.someguyssoftware.dungeonsengine.config.IChestConfig;
+import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
 import otd.lib.async.AsyncWorldEditor;
 
 /**

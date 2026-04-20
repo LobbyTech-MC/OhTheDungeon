@@ -2,13 +2,14 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.treasure.loot.WeightedRandomLoot;
-import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.init.Blocks;
 //import net.minecraft.init.Items;
 //import net.minecraft.item.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.WeightedRandomLoot;
+import forge_sandbox.greymerk.roguelike.util.WeightedRandomizer;
 
 public class ItemBrewing extends ItemBase {
 

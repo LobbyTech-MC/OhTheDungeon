@@ -6,10 +6,11 @@
 package forge_sandbox.twilightforest.structures.lichtower;
 
 import java.util.Random;
-import otd.lib.async.AsyncWorldEditor;
+
 import forge_sandbox.twilightforest.TFFeature;
 import forge_sandbox.twilightforest.structures.StructureStartTFAbstract;
 import forge_sandbox.twilightforest.structures.StructureTFComponent;
+import otd.lib.async.AsyncWorldEditor;
 
 public class StructureStartLichTower extends StructureStartTFAbstract {
 	public StructureStartLichTower() {

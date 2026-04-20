@@ -1,22 +1,5 @@
 package otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome;
 
-//import com.github.barteks2x.b173gen.generator.WorldGenerator173;
-import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldgen.MathHelper;
-//import com.github.barteks2x.b173gen.oldgen.WorldGenBigTreeOld;
-//import com.github.barteks2x.b173gen.oldgen.WorldGenBirchTreeOld;
-//import com.github.barteks2x.b173gen.oldgen.WorldGenGrassOld;
-//import com.github.barteks2x.b173gen.oldgen.WorldGenTaiga1Old;
-//import com.github.barteks2x.b173gen.oldgen.WorldGenTaiga2Old;
-//import com.github.barteks2x.b173gen.oldgen.WorldGenTreeOld;
-import org.bukkit.Material;
-import org.bukkit.Registry;
-import org.bukkit.block.Biome;
-import org.bukkit.configuration.Configuration;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import static otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BetaBiome.DESERT;
 import static otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BetaBiome.FOREST;
 import static otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BetaBiome.PLAINS;
@@ -28,6 +11,24 @@ import static otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.Be
 import static otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BetaBiome.TAIGA;
 import static otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.biome.BetaBiome.TUNDRA;
 //import static org.bukkit.Material.LONG_GRASS;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+//import com.github.barteks2x.b173gen.oldgen.WorldGenBigTreeOld;
+//import com.github.barteks2x.b173gen.oldgen.WorldGenBirchTreeOld;
+//import com.github.barteks2x.b173gen.oldgen.WorldGenGrassOld;
+//import com.github.barteks2x.b173gen.oldgen.WorldGenTaiga1Old;
+//import com.github.barteks2x.b173gen.oldgen.WorldGenTaiga2Old;
+//import com.github.barteks2x.b173gen.oldgen.WorldGenTreeOld;
+import org.bukkit.Material;
+import org.bukkit.Registry;
+import org.bukkit.block.Biome;
+import org.bukkit.configuration.Configuration;
+
+//import com.github.barteks2x.b173gen.generator.WorldGenerator173;
+import otd.addon.com.ohthedungeon.storydungeon.generator.b173gen.oldgen.MathHelper;
 
 public class BiomeOld {
 

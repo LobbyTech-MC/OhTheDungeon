@@ -3,13 +3,14 @@
  */
 package forge_sandbox.com.someguyssoftware.dungeons2.generator;
 
+import org.bukkit.Material;
+
+import forge_sandbox.BlockPos;
 import forge_sandbox.com.someguyssoftware.dungeons2.generator.blockprovider.IDungeonsBlockProvider;
 import forge_sandbox.com.someguyssoftware.dungeons2.model.Room;
 import forge_sandbox.com.someguyssoftware.dungeons2.style.DesignElement;
 import forge_sandbox.com.someguyssoftware.gottschcore.positional.ICoords;
 import otd.lib.async.AsyncWorldEditor;
-import forge_sandbox.BlockPos;
-import org.bukkit.Material;
 
 /**
  * @author Mark Gottschling on Aug 1, 2016

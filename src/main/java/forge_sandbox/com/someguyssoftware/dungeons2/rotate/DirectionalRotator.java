@@ -3,11 +3,12 @@
  */
 package forge_sandbox.com.someguyssoftware.dungeons2.rotate;
 
-import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
-import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rotate;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
+
+import forge_sandbox.com.someguyssoftware.gottschcore.enums.Direction;
+import forge_sandbox.com.someguyssoftware.gottschcore.enums.Rotate;
 
 /**
  * 

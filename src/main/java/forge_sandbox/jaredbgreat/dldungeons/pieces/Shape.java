@@ -1,5 +1,74 @@
 package forge_sandbox.jaredbgreat.dldungeons.pieces;
 
+//import net.minecraft.world.World;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.crossbottom;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.crossmiddle;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.crosstop;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.eback000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.eback090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.eback180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.eback270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ebottom000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ebottom090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ebottom180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ebottom270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.emiddle000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.emiddle090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.emiddle180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.emiddle270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.etop000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.etop090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.etop180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.etop270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ibottom;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ileft;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.imiddle;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.iright;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.itop;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lback000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lback090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lback180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lback270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lbottom000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lbottom090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lbottom180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.lbottom270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.obottom;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.oleft;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.oright;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.otop;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.sbottom000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.sbottom090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.simple;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.sleft000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.sleft090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.smiddle000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.smiddle090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.sright000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.sright090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.stop000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.stop090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.tbottom000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.tbottom090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.tbottom180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.tbottom270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ttop000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ttop090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ttop180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ttop270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ubottom000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ubottom090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ubottom180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.ubottom270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uleft000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uleft090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uleft180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uleft270;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uright000;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uright090;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uright180;
+import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.uright270;
+
 /* 
  * Doomlike Dungeons by is licensed the MIT License
  * Copyright (c) 2014-2018 Jared Blackburn
@@ -7,9 +76,6 @@ package forge_sandbox.jaredbgreat.dldungeons.pieces;
 
 import forge_sandbox.jaredbgreat.dldungeons.planner.Dungeon;
 import forge_sandbox.jaredbgreat.dldungeons.rooms.Room;
-
-//import net.minecraft.world.World;
-import static forge_sandbox.jaredbgreat.dldungeons.pieces.Rectangle.*;
 
 /**
  * This class represents shape primitives from which dungeon architecture is

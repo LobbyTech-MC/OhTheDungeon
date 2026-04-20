@@ -2,14 +2,15 @@ package forge_sandbox.greymerk.roguelike.monster.profiles;
 
 import java.util.Random;
 
+import org.bukkit.World;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
+
 import forge_sandbox.greymerk.roguelike.monster.IEntity;
 import forge_sandbox.greymerk.roguelike.monster.IMonsterProfile;
 import forge_sandbox.greymerk.roguelike.treasure.loot.Enchant;
 import forge_sandbox.greymerk.roguelike.treasure.loot.Loot;
 import forge_sandbox.greymerk.roguelike.treasure.loot.Slot;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.World;
 
 public class ProfileTallMob implements IMonsterProfile {
 

@@ -1,6 +1,7 @@
 package otd.addon.com.ohthedungeon.storydungeon.com.ochotonida.candymod.enums;
 
 import java.util.Random;
+
 import org.bukkit.Material;
 
 public enum EnumGummy {

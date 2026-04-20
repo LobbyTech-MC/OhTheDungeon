@@ -5,12 +5,14 @@
  */
 package otd.addon.com.ohthedungeon.storydungeon.generator;
 
+import java.util.Random;
+
+import org.bukkit.Material;
+import org.bukkit.util.noise.SimplexNoiseGenerator;
+
 import otd.addon.com.ohthedungeon.storydungeon.async.AsyncChunk;
 import otd.addon.com.ohthedungeon.storydungeon.generator.noise.FMB_RMF;
 import otd.addon.com.ohthedungeon.storydungeon.generator.noise.Voronoi;
-import java.util.Random;
-import org.bukkit.Material;
-import org.bukkit.util.noise.SimplexNoiseGenerator;
 
 public class Tropic extends BaseGenerator {
 	private long usedSeed = -1;

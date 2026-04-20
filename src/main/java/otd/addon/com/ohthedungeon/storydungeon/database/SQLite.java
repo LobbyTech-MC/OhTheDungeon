@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SQLite extends Database {

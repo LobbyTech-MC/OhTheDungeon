@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import forge_sandbox.greymerk.roguelike.util.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
+import forge_sandbox.greymerk.roguelike.util.DyeColor;
 import otd.util.I18n;
 //import net.minecraft.init.Items;
 //import net.minecraft.item.ItemStack;

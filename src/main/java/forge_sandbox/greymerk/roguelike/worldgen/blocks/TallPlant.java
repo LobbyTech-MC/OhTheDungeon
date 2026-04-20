@@ -1,13 +1,14 @@
 package forge_sandbox.greymerk.roguelike.worldgen.blocks;
 
-import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
-import forge_sandbox.greymerk.roguelike.worldgen.Coord;
-import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
-import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
 import org.bukkit.Material;
 import org.bukkit.block.data.Bisected;
 //import net.minecraft.block.BlockDoublePlant;
 //import net.minecraft.init.Blocks;
+
+import forge_sandbox.greymerk.roguelike.worldgen.Cardinal;
+import forge_sandbox.greymerk.roguelike.worldgen.Coord;
+import forge_sandbox.greymerk.roguelike.worldgen.IWorldEditor;
+import forge_sandbox.greymerk.roguelike.worldgen.MetaBlock;
 
 public enum TallPlant {
 

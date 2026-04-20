@@ -2,6 +2,7 @@ package forge_sandbox.twilightforest.structures.darktower;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+
 import forge_sandbox.twilightforest.structures.StructureTFDecorator;
 
 public class StructureDecoratorDarkTower extends StructureTFDecorator {

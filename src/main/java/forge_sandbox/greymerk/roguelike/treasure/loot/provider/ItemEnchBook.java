@@ -2,13 +2,14 @@ package forge_sandbox.greymerk.roguelike.treasure.loot.provider;
 
 import java.util.Random;
 
-import com.google.gson.JsonObject;
-
-import forge_sandbox.greymerk.roguelike.treasure.loot.Enchant;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 //import net.minecraft.init.Items;
 //import net.minecraft.item.ItemStack;
+
+import com.google.gson.JsonObject;
+
+import forge_sandbox.greymerk.roguelike.treasure.loot.Enchant;
 
 public class ItemEnchBook extends ItemBase {
 
