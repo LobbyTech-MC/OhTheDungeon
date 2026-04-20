@@ -361,11 +361,32 @@ public class BattleTower {
     
     private static void setSpawner(World world, Random random, BlockVector3 pos) {
         Block block = world.getBlockAt(pos.getBlockX(), pos.getBlockY(), pos.getBlockZ());
+        if (block == null) {
+            Bukkit.getLogger().warning("setSpawner: Block is null at " + pos);
+            return;
+        }
+        
         block.setType(Material.SPAWNER, true);
-        CreatureSpawner tileentitymobspawner = (CreatureSpawner) block.getState();
-        tileentitymobspawner.setSpawnedType(getMobType(random));
-        tileentitymobspawner.update();
-        SpawnerDecryAPI.setSpawnerDecry(block, Main.instance, DungeonType.BattleTower, true);
+        
+        // 确保 BlockState 正确获取
+        org.bukkit.block.BlockState state = block.getState();
+        if (!(state instanceof CreatureSpawner)) {
+            Bukkit.getLogger().warning("setSpawner: BlockState is not CreatureSpawner at " + pos);
+            return;
+        }
+        
+        CreatureSpawner spawner = (CreatureSpawner) state;
+        EntityType mobType = getMobType(random);
+        spawner.setSpawnedType(mobType);
+        spawner.update();
+        
+        // 添加 SpawnerDecry，捕获异常避免影响主流程
+        try {
+            SpawnerDecryAPI.setSpawnerDecry(block, Main.instance, DungeonType.BattleTower, true);
+        } catch (Exception e) {
+            Bukkit.getLogger().warning("Failed to set spawner decry at " + pos + ": " + e.getMessage());
+            // 不抛出异常，刷怪笼仍然可以正常工作
+        }
     }
     
     private static void processChests(World world, Random random, List<Location> loc, List<Material> mat) {

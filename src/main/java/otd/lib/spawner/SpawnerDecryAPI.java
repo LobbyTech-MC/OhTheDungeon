@@ -36,83 +36,116 @@ import otd.util.PluginKeys;
 import otd.world.DungeonType;
 
 /**
- *
  * @author
+ * @modified Fixed NBT null pointer issues
  */
 public class SpawnerDecryAPI {
 
-	public static SplittableRandom random = new SplittableRandom();
+    public static SplittableRandom random = new SplittableRandom();
 
-	public static boolean hasLightRuleUpdate(TileState ts, JavaPlugin plugin) {
-		if (otd == null) {
-			otd = new NamespacedKey(plugin, "ohthedungeon_" + Main.version.toString());
-			lightrule = new NamespacedKey(plugin, PluginKeys.lightrule);
-		}
-		{
-			if (!SpawnerManager.instance().isOtdSpawner((CreatureSpawner) ts))
-				return true;
-		}
-		NamespacedKey key = lightrule;
-		return ts.getPersistentDataContainer().has(key, PersistentDataType.BYTE);
-	}
+    public static boolean hasLightRuleUpdate(TileState ts, JavaPlugin plugin) {
+        if (otd == null) {
+            otd = new NamespacedKey(plugin, "ohthedungeon_" + Main.version.toString());
+            lightrule = new NamespacedKey(plugin, PluginKeys.lightrule);
+        }
+        {
+            if (!SpawnerManager.instance().isOtdSpawner((CreatureSpawner) ts))
+                return true;
+        }
+        NamespacedKey key = lightrule;
+        return ts.getPersistentDataContainer().has(key, PersistentDataType.BYTE);
+    }
 
-	private static NamespacedKey otd = null;
-	private static NamespacedKey lightrule = null;
+    private static NamespacedKey otd = null;
+    private static NamespacedKey lightrule = null;
 
-	public static void setSpawnerDecry(Block block, JavaPlugin plugin, DungeonType type, boolean light_update) {
-		if (otd == null) {
-			otd = new NamespacedKey(plugin, "ohthedungeon_" + Main.version.toString());
-			lightrule = new NamespacedKey(plugin, PluginKeys.lightrule);
-		}
+    public static void setSpawnerDecry(Block block, JavaPlugin plugin, DungeonType type, boolean light_update) {
+        // 空值检查
+        if (block == null) {
+            Main.instance.getLogger().warning("setSpawnerDecry: Block is null");
+            return;
+        }
+        
+        if (otd == null) {
+            otd = new NamespacedKey(plugin, "ohthedungeon_" + Main.version.toString());
+            lightrule = new NamespacedKey(plugin, PluginKeys.lightrule);
+        }
 
-		World world = block.getWorld();
-		String name = world.getName();
+        World world = block.getWorld();
+        if (world == null) {
+            Main.instance.getLogger().warning("setSpawnerDecry: World is null");
+            return;
+        }
+        
+        String name = world.getName();
 
-		double rate = 0;
-		if (WorldConfig.wc.dict.containsKey(name)) {
-			SimpleWorldConfig swc = WorldConfig.wc.dict.get(name);
-			rate = swc.spawner_rejection_rate;
-		}
+        double rate = 0;
+        if (WorldConfig.wc.dict.containsKey(name)) {
+            SimpleWorldConfig swc = WorldConfig.wc.dict.get(name);
+            rate = swc.spawner_rejection_rate;
+        }
 
-		if (random.nextDouble() < rate) {
-			block.setType(Material.AIR);
-			return;
-		}
+        if (random.nextDouble() < rate) {
+            block.setType(Material.AIR);
+            return;
+        }
 
-		if (!(block.getState() instanceof CreatureSpawner))
-			return;
+        if (!(block.getState() instanceof CreatureSpawner)) {
+            Main.instance.getLogger().warning("setSpawnerDecry: Block is not a spawner at " + block.getLocation());
+            return;
+        }
 
-		if (light_update && MultiVersion.spawnerNeedLightUpdate()) {
-			updateSpawnerLightRule(block, plugin);
-		}
+        try {
+            if (light_update && MultiVersion.spawnerNeedLightUpdate()) {
+                updateSpawnerLightRule(block, plugin);
+            }
 
-		CreatureSpawner ts = (CreatureSpawner) block.getState();
-		SpawnerManager.instance().setOtdSpawnerTag(ts);
-//		ts.getPersistentDataContainer().set(decry, PersistentDataType.BYTE, (byte) 15);
-		ts.getPersistentDataContainer().set(otd, PersistentDataType.BYTE, (byte) 15);
-		NamespacedKey key = new NamespacedKey(plugin, type.toString());
-		ts.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 15);
-		if (MultiVersion.spawnerNeedLightUpdate())
-			ts.getPersistentDataContainer().set(lightrule, PersistentDataType.BYTE, (byte) 15);
+            CreatureSpawner ts = (CreatureSpawner) block.getState();
+            SpawnerManager.instance().setOtdSpawnerTag(ts);
+            ts.getPersistentDataContainer().set(otd, PersistentDataType.BYTE, (byte) 15);
+            NamespacedKey key = new NamespacedKey(plugin, type.toString());
+            ts.getPersistentDataContainer().set(key, PersistentDataType.BYTE, (byte) 15);
+            if (MultiVersion.spawnerNeedLightUpdate())
+                ts.getPersistentDataContainer().set(lightrule, PersistentDataType.BYTE, (byte) 15);
+            ts.update(true, false);
+        } catch (Exception e) {
+            Main.instance.getLogger().warning("setSpawnerDecry error at " + block.getLocation() + ": " + e.getMessage());
+            // 不重新抛出异常，避免影响主流程
+        }
+    }
 
-		ts.update(true, false);
-	}
+    public static void updateSpawnerLightRule(Block block, JavaPlugin plugin) {
+        // 空值检查
+        if (block == null) {
+            Main.instance.getLogger().warning("updateSpawnerLightRule: Block is null");
+            return;
+        }
+        
+        if (otd == null) {
+            otd = new NamespacedKey(plugin, "ohthedungeon_" + Main.version.toString());
+            lightrule = new NamespacedKey(plugin, PluginKeys.lightrule);
+        }
 
-	public static void updateSpawnerLightRule(Block tileentity, JavaPlugin plugin) {
-		if (otd == null) {
-			otd = new NamespacedKey(plugin, "ohthedungeon_" + Main.version.toString());
-			lightrule = new NamespacedKey(plugin, PluginKeys.lightrule);
-		}
+        if (MultiVersion.spawnerLightRule == null) {
+            Main.instance.getLogger().warning("updateSpawnerLightRule: spawnerLightRule is null");
+            return;
+        }
+        
+        try {
+            MultiVersion.spawnerLightRule.update(block, plugin);
+        } catch (Exception e) {
+            Main.instance.getLogger().warning("updateSpawnerLightRule: Failed to update light rule - " + e.getMessage());
+            // 即使更新失败，仍然尝试设置 lightrule 标记
+        }
 
-//		V118R1SpawnerLightRule updater = new V118R1SpawnerLightRule();
-//		updater.update(tileentity, plugin);
-		if (MultiVersion.spawnerLightRule == null)
-			return;
-		MultiVersion.spawnerLightRule.update(tileentity, plugin);
-
-		TileState ts = (TileState) tileentity.getState();
-		ts.getPersistentDataContainer().set(lightrule, PersistentDataType.BYTE, (byte) 15);
-		ts.update(true, false);
-	}
-
+        try {
+            if (block.getState() instanceof TileState) {
+                TileState ts = (TileState) block.getState();
+                ts.getPersistentDataContainer().set(lightrule, PersistentDataType.BYTE, (byte) 15);
+                ts.update(true, false);
+            }
+        } catch (Exception e) {
+            Main.instance.getLogger().warning("updateSpawnerLightRule: Failed to set lightrule tag - " + e.getMessage());
+        }
+    }
 }
